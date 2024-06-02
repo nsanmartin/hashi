@@ -31,21 +31,17 @@ void process_line(char* line, Mutarr** X, size_t M) {
             size_t len = mutarr_len(X[h]);
             size_t i = 0;
             for (; i < len; ++i) {
-                char* w = *(char**)mutarr_at(X[h], i);
+                char* w = *(char**)mutarr_get(X[h], i);
                 if (strcmp(beg, w) == 0) { break; }
             }
             if (i >= len) {
                 char* copy = strdup(beg);
-                //printf("%lx: inserting: '%s'\n", h, copy);
-                mutarr_append(X[h], &copy);
-            } else {
-                //printf("%lx: '%s' Alrady inserted\n", h, beg);
+                mutarr_append(X[h], copy);
             }
         } else {
             X[h] = mutarr_create(char*);
             char* copy = strdup(beg);
-            //printf("%lx (fst): inserting: '%s'\n", h, copy);
-            mutarr_append(X[h], &copy);
+            mutarr_append(X[h], copy);
         }
         *p = tmp;
     }

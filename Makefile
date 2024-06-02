@@ -1,4 +1,4 @@
-CFLAGS:=-g  -Wall -Wextra -Werror -pedantic -Wold-style-definition -Iinclude
+CFLAGS:=-g -O2 -Wall -Wextra -Werror -pedantic -Wold-style-definition 
 
 
 OBJDIR=build
@@ -10,10 +10,15 @@ OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 
 
 collisions: $(OBJ)
-	$(CC) $(CFLAGS) -o build/$@ $@.c $^
+	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $@.c $^
+
+test_mutarr: utests/test_mutarr.c $(OBJ)
+	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $^ 
+
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
 	$(CC) $(CFLAGS)		\
+		-I$(INCLUDE)    \
 		-c -o $@     	\
 		$< 
 
