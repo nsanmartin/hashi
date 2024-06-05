@@ -22,17 +22,31 @@
 
 enum { MuaInitialCapacity = 8 };
 
+#define _mua_cpcty(M) (M)->capacity
+#define _mua_items(M) (M)->items
+#define _mua_item_sz(M) sizeof(*_mua_items(M))
 #define _mua_set_error(Mua) do { (Mua)->capacity = 0; (Mua)->len = 1; } while(0)
 #define _mua_at(Mua, Ix) (Mua)->items[Ix]
-#define _mua_realloc(Mua) \
+
+#define _mua_realloc(M) \
         do { \
-            size_t capacity = (Mua)->capacity; \
-            if (!capacity) { capacity = MuaInitialCapacity; } \
-            if ((Mua)->len >= capacity) { capacity += capacity; } \
-            if ((Mua)->capacity < capacity) { \
-                    (Mua)->capacity = capacity; \
-                    (Mua)->items = realloc((Mua)->items, (Mua)->capacity * sizeof(*(Mua)->items)); \
-                    if (!(Mua)->items) { perror("Realloc failed"); _mua_set_error(Mua); } \
+            if (mua_len(M) >= _mua_cpcty(M)) { \
+		    _mua_cpcty(M) = _mua_cpcty(M) ? 2 * _mua_cpcty(M) : MuaInitialCapacity ; \
+                    (M)->items = realloc((M)->items, (M)->capacity * sizeof(*(M)->items)); \
+                    if (!(M)->items) { perror("realloc failed"); _mua_set_error(M); } \
             } \
         } while(0)
 
+//static inline int _mua_realloc_impl(char* items, size_t item_sz, size_t* cpcty) {
+//    *cpcty = (*cpcty) ? 2 * (*cpcty) : MuaInitialCapacity ; 
+//    items = realloc(items, *cpcty * item_sz); 
+//    if (items) { perror("Realloc failed"); return 1; } 
+//    return 0;
+//}
+//
+//#define _mua_realloc(M) %
+//        do { %
+//            if (mua_len(M) >= _mua_cpcty(M) && _mua_realloc_impl((char*)_mua_items(M), _mua_item_sz(M), &_mua_cpcty(M))) { %
+//                     _mua_set_error(M);  %
+//            } %
+//        } while(0)
