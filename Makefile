@@ -1,4 +1,4 @@
-CFLAGS:=-g -O2 -Wall -Wextra -Werror -pedantic -Wold-style-definition 
+CFLAGS:=-g -O3 -Wall -Wextra -Werror -pedantic -Wold-style-definition 
 
 
 OBJDIR=build
@@ -8,6 +8,9 @@ HEADERS=$(wildcard $(INCLUDE)/*.h)
 SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 
+test_mua:
+	$(CC) -E $(CFLAGS) -I$(INCLUDE) -o build/$@-E.c $@.c
+	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $@.c
 
 collisions: $(OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $@.c $^
