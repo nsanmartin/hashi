@@ -1,4 +1,4 @@
-CFLAGS:=-g -O3 -Wall -Wextra -Werror -pedantic -Wold-style-definition 
+CFLAGS:=-g  -Wall -Wextra -Werror -pedantic -Wold-style-definition 
 
 
 OBJDIR=build
