@@ -1,3 +1,6 @@
+#ifndef __HASHI_MUA_H__
+#define __HASHI_MUA_H__
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -48,16 +51,4 @@ enum { MuaInitialCapacity = 8 };
             } \
         } while(0)
 
-//static inline int _mua_realloc_impl(char* items, size_t item_sz, size_t* cpcty) {
-//    *cpcty = (*cpcty) ? 2 * (*cpcty) : MuaInitialCapacity ; 
-//    items = realloc(items, *cpcty * item_sz); 
-//    if (items) { perror("Realloc failed"); return 1; } 
-//    return 0;
-//}
-//
-//#define _mua_realloc(M) %
-//        do { %
-//            if (mua_len(M) >= _mua_cpcty(M) && _mua_realloc_impl((char*)_mua_items(M), _mua_item_sz(M), &_mua_cpcty(M))) { %
-//                     _mua_set_error(M);  %
-//            } %
-//        } while(0)
+#endif

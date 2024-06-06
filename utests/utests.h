@@ -1,7 +1,6 @@
 #ifndef __HASHI_UTESTS_H__
 #define __HASHI_UTESTS_H__
 
-#include <mua.h>
 #include <string.h>
 
 #define RESET   "\033[0m"
@@ -21,5 +20,11 @@ enum { TestOk = 0, TestFail = 1 };
 
 #define utest_assert_str_eq_clean(Expected, String) \
     utest_assert_clean(strcmp(Expected, String) == 0)
+
+#define utest_finally_and_return(Clean) do { \
+	Clean; return TestOk; \
+fail_cleanup: \
+	Clean; return TestFail; \
+} while(0)
 
 #endif

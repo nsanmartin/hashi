@@ -1,4 +1,5 @@
 #include <utests.h>
+#include <mua.h>
 
 #define utest_mua_assert_find_str(Mua, V) do{ \
 	mua_item_type(x) __value_ = V; \
@@ -20,11 +21,6 @@
 	utest_assert_clean(!it); \
 } while(0)
 
-#define utest_finally_and_return(Clean) do { \
-	Clean; return TestOk; \
-fail_cleanup: \
-	Clean; return TestFail; \
-} while(0)
 
 typedef_mua(int);
 typedef struct { int x, y; float f; } Foo;
@@ -139,4 +135,5 @@ int main(void) {
 	} else {
 		puts("Tests Ok!");
 	}
+	return failures;
 }
