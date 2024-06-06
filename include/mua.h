@@ -24,14 +24,13 @@
 static inline void* _mua_find_impl(char* items, void* x, size_t item_sz, size_t len) {
 	for (size_t i = 0; i < len; ++i) {
 		char* it = (char*)items + item_sz * i;
-		char* x_bytes = (char*)x;
-		//if (strncmp(items, x_bytes, item_sz) == 0) { return it; }
-		//if (strncmp(it, x, item_sz) == 0) { return it; }
+		if (strncmp(it, x, item_sz) == 0) { return it; }
 	}
 	return 0x0;
 }
 
-#define mua_find(M, X) _mua_find_impl((char*)_mua_items(M), (void*)X, _mua_item_sz(M), mua_len(M))
+#define mua_find(M, X) _mua_find_impl((char*)_mua_items(M), (char*)&X, _mua_item_sz(M), mua_len(M))
+#define mua_cleanup(M) free(_mua_items(M))
 enum { MuaInitialCapacity = 8 };
 
 #define _mua_cpcty(M) (M)->capacity
