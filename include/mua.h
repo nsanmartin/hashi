@@ -14,8 +14,9 @@
 #define mua_create(Type) (mua_name(Type)){0}
 #define mua_ptr_create(Type) (mua_name_ptr(Type)){0}
 #define mua_err(Mua) ((Mua)->capacity == 0 && (Mua)->len == 1 )
-#define mua_item_type(M) typeof(*_mua_items(M))
+#define mua_item_type(M) typeof(*mua_items(M))
 #define mua_len(Mua) ((Mua)->len)
+#define mua_items(M) (M)->items
 #define mua_name(Type) mua_##Type
 #define mua_name_ptr(Type) mua_##Type##_ptr
 #define mua_append(Mua, Elem) do { \
@@ -39,16 +40,15 @@ static inline void* _mua_find_pointed_zero_terminated_impl(char** items, char* x
     return 0x0;
 }
 
-#define mua_find(M, X) _mua_find_impl((char*)_mua_items(M), (char*)&X, _mua_item_sz(M), mua_len(M))
+#define mua_find(M, X) _mua_find_impl((char*)mua_items(M), (char*)&X, _mua_item_sz(M), mua_len(M))
 #define mua_find_pointed_zero_terminated(M, X) \
-    _mua_find_pointed_zero_terminated_impl((char**)_mua_items(M), X,  mua_len(M))
+    _mua_find_pointed_zero_terminated_impl((char**)mua_items(M), X,  mua_len(M))
 
-#define mua_cleanup(M) free(_mua_items(M))
+#define mua_cleanup(M) free(mua_items(M))
 enum { MuaInitialCapacity = 8 };
 
 #define _mua_cpcty(M) (M)->capacity
-#define _mua_items(M) (M)->items
-#define _mua_item_sz(M) sizeof(*_mua_items(M))
+#define _mua_item_sz(M) sizeof(*mua_items(M))
 #define _mua_set_error(Mua) do { (Mua)->capacity = 0; (Mua)->len = 1; } while(0)
 #define _mua_at(Mua, Ix) (Mua)->items[Ix]
 
