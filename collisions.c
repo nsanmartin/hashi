@@ -6,7 +6,7 @@
 
 #include <hashi.h>
 
-#define TabLen 2000
+#define TabLen 20
 
 size_t hash(char* s) { return djb2_k33((unsigned char*)s) % TabLen; }
 
@@ -14,18 +14,30 @@ int puts_each(void* e) { return printf("%lx <= %s\n", hash(e), (const char*)e); 
 
 void print_pair(unsigned char* s, size_t h) { printf("%lx: %s\n", h, s); }
 
+char next_word(char** pp, char** beg) {
+    char* p = *pp;
+    if (!*p || *p == '\n') { *pp = 0x0; return 0; }
+    while (*p && isspace(*p)) { ++p; }
+    *beg = p;
+    while (*p && !isspace(*p)) { ++p; }
+    char tmp = *p;
+    *p = '\0';
+    *pp = p;
+    return tmp;
+}
+
 void process_line(char* line, Mutarr** X, size_t M) {
     (void)M;
     char* p = line;
     while (*p) {
         if (!*p || *p == '\n') { return; }
-        if (isspace(*p)) { ++p; continue; }
+        while (*p && isspace(*p)) { ++p; }
         char* beg = p;
-        while (*p && !isspace(*p)) {
-            ++p;
-        }
+        while (*p && !isspace(*p)) { ++p; }
         char tmp = *p;
         *p = '\0';
+
+
         size_t h = hash(beg);
         if (X[h]) {
             size_t len = mutarr_len(X[h]);
@@ -68,8 +80,10 @@ int main(void) {
         mean += len;
         min = min > len ? len : min;
         max = max < len ? len : max;
-        printf("%ld: %ld\n", i, len);
-        mutarr_cleanup(X[i], free);
+        if (len) {
+            printf("%ld: %ld\n", i, len);
+            mutarr_cleanup(X[i], free);
+        }
     }
     mean = mean / TabLen;
     printf("sumL: %lld, mean: %f, min: %f, max: %f\n", sum, mean, min, max);
