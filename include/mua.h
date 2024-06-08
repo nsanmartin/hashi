@@ -5,7 +5,7 @@
 
 #define typedef_mua(Type) typedef struct { Type* items; size_t len; size_t capacity; } mua_name(Type)
 #define typedef_mua_ptr(Type) \
-	typedef struct { Type** items; size_t len; size_t capacity; } mua_name_ptr(Type)
+    typedef struct { Type** items; size_t len; size_t capacity; } mua_name_ptr(Type)
 
 #define mua_at(Mua, Ix) ((Ix >= (Mua)->len) ? (0x0) : &(_mua_at(Mua, Ix)))
 #define mua_create(Type) (mua_name(Type)){0}
@@ -21,15 +21,25 @@
         } while(0)
 
 // TOOD
-static inline void* _mua_find_impl(char* items, void* x, size_t item_sz, size_t len) {
-	for (size_t i = 0; i < len; ++i) {
-		char* it = (char*)items + item_sz * i;
-		if (strncmp(it, x, item_sz) == 0) { return it; }
-	}
-	return 0x0;
+static inline void* _mua_find_impl(char* items, char* x, size_t item_sz, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        char* it = (char*)items + item_sz * i;
+        if (strncmp(it, x, item_sz) == 0) { return it; }
+    }
+    return 0x0;
+}
+
+static inline void* _mua_find_pointed_zero_terminated_impl(char** items, char* x, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        if (strcmp(items[i], x) == 0) { return items + i; }
+    }
+    return 0x0;
 }
 
 #define mua_find(M, X) _mua_find_impl((char*)_mua_items(M), (char*)&X, _mua_item_sz(M), mua_len(M))
+#define mua_find_pointed_zero_terminated(M, X) \
+    _mua_find_pointed_zero_terminated_impl((char**)_mua_items(M), X,  mua_len(M))
+
 #define mua_cleanup(M) free(_mua_items(M))
 enum { MuaInitialCapacity = 8 };
 
@@ -41,11 +51,9 @@ enum { MuaInitialCapacity = 8 };
 
 #define _mua_realloc(M) \
         do { \
-            if (mua_len(M) >= _mua_cpcty(M)) { \
-		    _mua_cpcty(M) = _mua_cpcty(M) ? 2 * _mua_cpcty(M) : MuaInitialCapacity ; \
-                    (M)->items = realloc((M)->items, (M)->capacity * sizeof(*(M)->items)); \
-                    if (!(M)->items) { perror("realloc failed"); _mua_set_error(M); } \
-            } \
+            _mua_cpcty(M) = _mua_cpcty(M) ? 2 * _mua_cpcty(M) : MuaInitialCapacity ; \
+            (M)->items = realloc((M)->items, (M)->capacity * sizeof(*(M)->items)); \
+            if (!(M)->items) { perror("realloc failed"); _mua_set_error(M); } \
         } while(0)
 
 //static inline int _mua_realloc_impl(char* items, size_t item_sz, size_t* cpcty) {
@@ -61,3 +69,6 @@ enum { MuaInitialCapacity = 8 };
 //                     _mua_set_error(M);  %
 //            } %
 //        } while(0)
+#define mua_foreach(X, Fn) do{ \
+    for (size_t __mua_i = 0; __mua_i < mua_len(X); ++__mua_i) { Fn(_mua_at(X, __mua_i)); } \
+} while(0)

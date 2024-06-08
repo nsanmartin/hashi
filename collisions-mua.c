@@ -5,8 +5,10 @@
 #include <ctype.h>
 
 #include <hashi.h>
+#include <mua.h>
 
 #define TabLen 20
+typedef_mua_ptr(char);
 
 size_t hash(char* s) { return djb2_k33((unsigned char*)s) % TabLen; }
 
@@ -16,7 +18,7 @@ void print_pair(unsigned char* s, size_t h) { printf("%lx: %s\n", h, s); }
 
 char next_word(char** pp, char** beg) {
     char* p = *pp;
-    if (!*p || *p == '\n') { *pp = 0x0; return 0; }
+    if (!*p || *p == '\n') { return '\0'; }
     while (*p && isspace(*p)) { ++p; }
     *beg = p;
     while (*p && !isspace(*p)) { ++p; }
@@ -26,7 +28,7 @@ char next_word(char** pp, char** beg) {
     return tmp;
 }
 
-void process_line(char* line, Mutarr** X, size_t M) {
+void process_line(char* line, mua_char_ptr* X, size_t M) {
     (void)M;
     char* p = line;
     while (*p) {
@@ -39,21 +41,16 @@ void process_line(char* line, Mutarr** X, size_t M) {
 
 
         size_t h = hash(beg);
-        if (X[h]) {
-            size_t len = mutarr_len(X[h]);
-            size_t i = 0;
-            for (; i < len; ++i) {
-                char* w = *(char**)mutarr_get(X[h], i);
-                if (strcmp(beg, w) == 0) { break; }
-            }
-            if (i >= len) {
+        size_t len = mua_len(X + h);
+        if (len) {
+            mua_item_type(X)* it = mua_find_pointed_zero_terminated(X + h, beg); 
+            if (!it) {
                 char* copy = strdup(beg);
-                mutarr_append(X[h], copy);
+                mua_append(X + h, copy);
             }
         } else {
-            X[h] = mutarr_create(char*);
             char* copy = strdup(beg);
-            mutarr_append(X[h], copy);
+            mua_append(X + h, copy);
         }
         *p = tmp;
     }
@@ -61,7 +58,8 @@ void process_line(char* line, Mutarr** X, size_t M) {
 
 int main(void) {
     size_t M = TabLen;
-    Mutarr* X[TabLen] = {0};
+	mua_char_ptr X[TabLen] = {0};
+    //Mutarr* X[TabLen] = {0};
 
     ssize_t nread;
     size_t len = 0;
@@ -75,14 +73,16 @@ int main(void) {
     double max = 0;
     long long unsigned sum = 0;
     for (size_t i = 0; i < TabLen; ++i) {
-        size_t len = X[i] ? mutarr_len(X[i]) : 0;
+        size_t len = mua_len(X + i);
         sum += len;
         mean += len;
         min = min > len ? len : min;
         max = max < len ? len : max;
         if (len) {
             printf("%ld: %ld\n", i, len);
-            mutarr_cleanup(X[i], free);
+            //mua_foreach(X+i, puts);
+            mua_foreach(X+i, free);
+            mua_cleanup(X+i);
         }
     }
     mean = mean / TabLen;

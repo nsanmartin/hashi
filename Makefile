@@ -8,6 +8,10 @@ HEADERS=$(wildcard $(INCLUDE)/*.h)
 SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 
+collisions-mua: $(OBJ)
+	#$(CC) -E $(CFLAGS) -I$(INCLUDE) -o build/$@-E.c $@.c $^
+	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $@.c $^
+
 test_mua: utests/test_mua.c
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $^
 	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ $^
