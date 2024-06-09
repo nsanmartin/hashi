@@ -10,9 +10,12 @@ OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 
 tests: test_hat test_mua
 
-test_hat: utests/test_hat.c
+test_hat: utests/test_hat.c $(OBJ) 
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $^
-	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ $^
+	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ $^ -lm
+
+test_hat-E: $(OBJ)
+	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ build/$@.c $^ -lm
 
 test_mua: utests/test_mua.c
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $^

@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 size_t djb2_k33(unsigned char* s);
+size_t djb2_k33_len(unsigned char* s, size_t len);
 
 
 typedef struct Mutarr Mutarr;
