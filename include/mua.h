@@ -47,6 +47,14 @@ static inline void* _mua_find_impl(char* items, char* x, size_t item_sz, size_t 
     return 0x0;
 }
 
+static inline void* _mua_find_substr_impl(char* items, char* x, size_t substr_sz, size_t item_sz, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        char* it = (char*)items + item_sz * i;
+        if (strncmp(it, x, substr_sz) == 0) { return it; }
+    }
+    return 0x0;
+}
+
 static inline void* _mua_find_pointed_zero_terminated_impl(char** items, char* x, size_t len) {
     for (size_t i = 0; i < len; ++i) {
         if (strcmp(items[i], x) == 0) { return items + i; }
@@ -54,7 +62,7 @@ static inline void* _mua_find_pointed_zero_terminated_impl(char** items, char* x
     return 0x0;
 }
 
-#define mua_find_substring(M, X, Slen) _mua_find_impl((char*)mua_items(M), (char*)&X, Slen, mua_len(M))
+#define mua_find_substring(M, X, Slen) _mua_find_substr_impl((char*)mua_items(M), (char*)&X, Slen, _mua_item_sz(M), mua_len(M))
 #define mua_find(M, X) _mua_find_impl((char*)mua_items(M), (char*)&X, _mua_item_sz(M), mua_len(M))
 #define mua_find_pointed_zero_terminated(M, X) \
     _mua_find_pointed_zero_terminated_impl((char**)mua_items(M), X,  mua_len(M))
