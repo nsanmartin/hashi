@@ -1,4 +1,4 @@
-CFLAGS:=-g  -Wall -Wextra -Werror -pedantic -Wold-style-definition 
+CFLAGS:=-g -Wall -Wextra -Werror -pedantic -Wold-style-definition 
 
 
 OBJDIR=build
@@ -11,11 +11,11 @@ OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 tests: test_hat test_mua
 
 test_hat: utests/test_hat.c $(OBJ) 
-	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $^
+	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $<
 	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ $^ -lm
 
 test_hat-E: $(OBJ)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ build/$@.c $^ -lm
+	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ build/$@.c $< -lm
 
 test_mua: utests/test_mua.c
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $^
