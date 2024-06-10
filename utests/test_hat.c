@@ -21,6 +21,13 @@ int test_hat_0(void) {
     v = 7;
     hat_at(H, v, it);
     utest_assert_clean(!it);
+
+    hat_update(H, 0, 11);
+    v = 0;
+    hat_at(H, v, it);
+    utest_assert_clean(it);
+    utest_assert_clean(it->k == v);
+
 //TODO: cleanup
     utest_finally_and_return(((void)0));
 }

@@ -46,14 +46,13 @@ enum { HatInitialCapacity = 4 }; // this value is doubled by mua
 
 //    mua_create(typeof(hat_tab(H))); 
 #define hat_init(H) do{ \
-	hat_capacity(H) = HatInitialCapacity; \
     hat_len(H) = 0; \
     _mua_realloc(&hat_tab(H)); \
     mua_len(&hat_tab(H)) = _mua_cpcty(&hat_tab(H)); \
 } while(0);
 
 #define _hat_tab(H) (H)->tab
-#define hat_capacity(H) (H)->capacity
+#define hat_capacity(H) _mua_cpcty(&hat_tab(H))
 #define hat_len(H) (H)->len
 #define hat_tab(H) (H)->tab
 #define hat_err(H) (mua_err(&hat_tab(H)))
@@ -67,7 +66,7 @@ enum { HatInitialCapacity = 4 }; // this value is doubled by mua
     char __hat_k[sizeof(K)]; \
     typeof(K) __hat_k_lv = K; \
     memcpy(__hat_k, (char*)&__hat_k_lv, sizeof(K)); \
-    size_t __hat_h = hat_hash_djb2(H, __hat_k, sizeof(K)); \
+    size_t __hat_h = hat_hash_djb2(H, __hat_k, sizeof(K)) % hat_capacity(H); \
     mua_item_type(&_hat_tab(H))* __hat_bkt; \
     __hat_bkt = mua_at(&_hat_tab(H), __hat_h); \
     mua_append(__hat_bkt, ((hat_elem_type(H)){.k=K,.v=V})); \
@@ -82,7 +81,7 @@ enum { HatInitialCapacity = 4 }; // this value is doubled by mua
     char __hat_k[sizeof(K)]; \
     typeof(K) __hat_k_lv = K; \
     memcpy(__hat_k, (char*)&__hat_k_lv, sizeof(K)); \
-    size_t __hat_h = hat_hash_djb2(H, __hat_k, sizeof(K)); \
+    size_t __hat_h = hat_hash_djb2(H, __hat_k, sizeof(K)) % hat_capacity(H); \
     mua_item_type(&_hat_tab(H))* __hat_bkt; \
     __hat_bkt = mua_at(&_hat_tab(H), __hat_h); \
     mua_item_type(__hat_bkt)* __hat_it = mua_find_substring(__hat_bkt, K, hat_ksz(H)); \
