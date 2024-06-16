@@ -46,10 +46,24 @@
 #define arl_of(Type) _hashi_cat(arl, Type)
 #define arl_of_ptr(Type) _hashi_cat(arl_of(Type), ptr)
 #define arl_append(A, Elem) do { \
-    if (arl_len(A) >= arl_capacity(A)) { _arl_realloc(A); } \
+    if (arl_len(A) >= arl_capacity(A)) { _arl_realloc_or_set_err(A); } \
     if (!arl_err(A)) { (A)->items[(A)->len++] = Elem; } \
 } while(0)
 
+
+static inline void* _arl_find_prefix_or_empty_impl(
+    char* items, char* x, size_t prefix_len, size_t item_sz, size_t len, size_t capacity
+) {
+    size_t i = 0;
+    char* it;
+    if (prefix_len <= item_sz) {
+        for (; i < len; ++i) {
+            it = items + item_sz * i;
+            if (strncmp(it, x, prefix_len) == 0) { return it; }
+        }
+    }
+    return i < capacity ? it : 0x0;
+}
 
 static inline void* _arl_find_prefix_impl(char* items, char* x, size_t prefix_len, size_t item_sz, size_t len) {
     if (prefix_len <= item_sz) {
@@ -83,7 +97,7 @@ enum { ArlInitialCapacity = 8 };
 
 #define _arl_set_error(A) do { arl_capacity(A) = 0; arl_len(A) = 1; } while(0)
 
-#define _arl_realloc(M) \
+#define _arl_realloc_or_set_err(M) \
 do { \
     arl_capacity(M) = arl_capacity(M) ? 2 * arl_capacity(M) : ArlInitialCapacity ; \
     (M)->items = realloc(arl_items(M), arl_capacity(M) * arl_item_size(M)); \
