@@ -16,8 +16,8 @@ test_arl: utests/test_arl.c
 
 
 test_hat: utests/test_hat.c $(OBJ) 
-	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $<
-	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ $^ -lm
+	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -Iscripts -o build/$@-E.c $<
+	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -Iscripts -o build/$@ $^ -lm
 
 test_hat-E: $(OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ build/$@.c $^ -lm

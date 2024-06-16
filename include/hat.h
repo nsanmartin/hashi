@@ -66,7 +66,7 @@
     hat_slot_for(H, __hat_k, &__hat_slot); \
     arl_item_type(__hat_slot)* __hat_it = arl_find_prefix(__hat_slot, __hat_k, hat_ksz(H)); \
     if (__hat_it) { __hat_it->v = V; } \
-    else { arl_append(__hat_slot, ((hat_elem_type(H)){.k=K, .v=V})); } \
+    else { arl_append(__hat_slot, ((hat_elem_type(H)){.k=K, .v=V})); ++hat_size(H); } \
     if (arl_err(__hat_slot)) { _hat_set_error(H); } \
 } while(0)
 
@@ -108,7 +108,7 @@
     str_hat_slot_for(H, K, &__hat_slot); \
     arl_item_type(__hat_slot)* __hat_it = arl_find_str(__hat_slot, K); \
     if (__hat_it) { __hat_it->v = V; } \
-    else { arl_append(__hat_slot, ((hat_elem_type(H)){.k=K, .v=V})); } \
+    else { arl_append(__hat_slot, ((hat_elem_type(H)){.k=K, .v=V})); ++hat_size(H); } \
     if (arl_err(__hat_slot)) { _hat_set_error(H); } \
 } while(0)
 

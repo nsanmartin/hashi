@@ -11,4 +11,10 @@ static inline void fill_int_word_rand(char* int_word) {
         int_word[i] = 'A' + (c % ('Z' - 'A'));
     }
 }
+
+static inline void fill_2_int_word_rand(char* w) {
+    fill_int_word_rand(w);
+    fill_int_word_rand(w + sizeof(int));
+    w[2 * sizeof(int)] = '\0';
+}
 #endif
