@@ -93,13 +93,13 @@ static inline void* _arl_find_str_impl(char** items, char* x, size_t len) {
 
 #define arl_cleanup(M) free(arl_items(M))
 
-enum { ArlInitialCapacity = 8 };
+enum { ArlDefaultInitialCapacity = 8 };
 
 #define _arl_set_error(A) do { arl_capacity(A) = 0; arl_len(A) = 1; } while(0)
 
 #define _arl_realloc_or_set_err(M) \
 do { \
-    arl_capacity(M) = arl_capacity(M) ? 2 * arl_capacity(M) : ArlInitialCapacity ; \
+    arl_capacity(M) = arl_capacity(M) ? 2 * arl_capacity(M) : ArlDefaultInitialCapacity ; \
     (M)->items = realloc(arl_items(M), arl_capacity(M) * arl_item_size(M)); \
     if (!(M)->items) { perror("realloc failed"); _arl_set_error(M); } \
 } while(0)
