@@ -33,6 +33,26 @@ int fill_2int_word(char* w) {
 }
 
 
+int fill_table_hat(HashTable* ht, long n_words) {
+    char w[1 + 2 * sizeof(int)];
+    while (n_words --> 0) {
+        fill_2int_word(w);
+
+        size_t h = ht->hash(ht, w);
+        size_t len = arl_len(ht->tab + h);
+        if (len) {
+            arl_item_type(ht->tab)* it = arl_find_str(ht->tab + h, w); 
+            if (!it) {
+                char* copy = strdup(w);
+                arl_append(ht->tab + h, copy);
+            }
+        } else {
+            char* copy = strdup(w);
+            arl_append(ht->tab + h, copy);
+        }
+    }
+    return 0;
+}
 int fill_table(HashTable* ht, long n_words) {
     char w[1 + 2 * sizeof(int)];
     while (n_words --> 0) {
@@ -54,6 +74,12 @@ int fill_table(HashTable* ht, long n_words) {
     return 0;
 }
 
+
+int run_hat(size_t initial_capacity, size_t n_words) {
+    hat_int_int* H = &hat_empty(int, int);
+    hat_init(H, initial_capacity);
+    utest_assert(!hat_err(H));
+}
 
 int run(size_t initial_capacity, size_t n_words) {
     HashTable ht = (HashTable){ .tab=0x0, .capacity=initial_capacity, .len=0, .hash=ht_hash };

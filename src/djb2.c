@@ -1,4 +1,5 @@
 #include <hashi.h>
+#include <stdio.h>
 
 size_t djb2_k33_with_seed(unsigned char* str, size_t seed) {
     unsigned long hash = seed; //5381;
