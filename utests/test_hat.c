@@ -7,7 +7,7 @@ typedef_hat(int, int);
 
 int test_hat_0(void) {
     hat_int_int* H = &hat_empty(int, int);
-    hat_init(H);
+    hat_init(H, 10);
     utest_assert(!hat_err(H));
 
     hat_elem_type(H)*it = 0x0;
@@ -32,7 +32,7 @@ int test_hat_0(void) {
 
 int test_hat_1(void) {
     hat_int_int* H = &hat_empty(int, int);
-    hat_init(H);
+    hat_init(H, 10);
     utest_assert(!hat_err(H));
 
     const int sz = 100;

@@ -9,8 +9,6 @@
 #include <arl.h>
 #include <hashi.h>
 
-enum { HatInitialCapacity = 4 }; // this value is doubled by arl
-
 #define hat_hash_djb2(H, Str, Len) (djb2_k33_len((unsigned char*)Str, Len) % hat_capacity(H))
 
 // Name Macros
@@ -43,8 +41,8 @@ enum { HatInitialCapacity = 4 }; // this value is doubled by arl
 
 #define hat_empty(KeyT, ValT) (hat_of(KeyT, ValT)){0}
 
-#define hat_init(H) do{ \
-    arl_init_calloc(&hat_slots(H), HatInitialCapacity); \
+#define hat_init(H, Cpcty) do{ \
+    arl_init_calloc(&hat_slots(H), Cpcty); \
 } while(0);
 
 #define hat_slots(H) ((H)->slots)
