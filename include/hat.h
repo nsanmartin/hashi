@@ -75,7 +75,8 @@
     if (arl_err(__hat_slot)) { _hat_set_error(H); } \
 } while(0)
 
-// TODO #define hat_cleanup(A) arl_cleanup(
+#define hat_cleanup(A) arl_cleanup(&hat_slots(H))
+
 //
 
 // str hat (string hash table)
