@@ -75,9 +75,14 @@ static inline void* _arl_find_prefix_impl(char* items, char* x, size_t prefix_le
     return 0x0;
 }
 
-static inline void* _arl_find_str_impl(char** items, char* x, size_t len) {
+static inline void* _arl_find_str_impl(
+    char** items, char* x, size_t item_sz, size_t len
+) {
     for (size_t i = 0; i < len; ++i) {
-        if (strcmp(items[i], x) == 0) { return items + i; }
+        char* addr = ((char*)items) + item_sz * i;
+        char* key_str = *(char**)addr;
+        if (!key_str) { perror("expecting a key string, found NULL\n"); return 0x0;}
+        if (strcmp(key_str, x) == 0) { return addr; }
     }
     return 0x0;
 }
@@ -89,7 +94,7 @@ static inline void* _arl_find_str_impl(char** items, char* x, size_t len) {
     _arl_find_impl((char*)arl_items(M), (char*)&X, arl_item_size(M), arl_item_size(M), arl_len(M))
 
 #define arl_find_str(M, X) \
-    _arl_find_str_impl((char**)arl_items(M), X,  arl_len(M))
+    _arl_find_str_impl((char**)arl_items(M), X, arl_item_size(M), arl_len(M))
 
 #define arl_cleanup(M) free(arl_items(M))
 

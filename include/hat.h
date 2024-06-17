@@ -30,9 +30,14 @@
 
 #define hat_empty(KeyT, ValT) (hat_of(KeyT, ValT)){0}
 
-#define hat_init(H, Cpcty) do{ \
-    arl_init_calloc(&hat_slots(H), Cpcty); \
-} while(0);
+#define hat_init(H, Cpcty) \
+    do{ arl_init_calloc(&hat_slots(H), Cpcty); } while(0)
+
+//#define hat_init(H, Cpcty) do{ 
+//    for (size_t __hat_for_i = 0; __hat_for_i < Cpcty; ++__hat_for_i) { 
+//        arl_append(&hat_slots(H), arl_hat_int_int_elem); 
+//    } 
+//} while(0);
 
 #define hat_slots(H) ((H)->slots)
 #define hat_capacity(H) arl_len(&hat_slots(H))
@@ -91,6 +96,9 @@
         Vt _v; \
     } str_hat_of(Vt)
 
+
+#define str_hat_empty(ValT) (str_hat_of(ValT)){0}
+
 #define str_hat_slot_for(H, Klv, OUT) do{ \
     size_t __hat_h = hat_hash_djb2(H, Klv, strlen(Klv)); \
     *OUT = arl_at(&hat_slots(H), __hat_h); \
@@ -113,4 +121,41 @@
 } while(0)
 
 
+//typedef struct { char* k; int v; } str_hat_int_elem;
+//
+//typedef struct {
+//    str_hat_int_elem* items;
+//    size_t len;
+//    size_t capacity;
+//} arl_str_hat_int_elem;
+//
+//typedef struct {
+//    arl_str_hat_int_elem* items;
+//    size_t len;
+//    size_t capacity;
+//} arl_arl_str_hat_int_elem;
+//
+//typedef struct {
+//    arl_arl_str_hat_int_elem slots;
+//    size_t size;
+//    str_hat_int_elem _elem;
+//    char* _k;
+//    int _v;
+//} str_hat_int;
+//
+//static inline void str_hat_int_update(str_hat_int* H,char* K, int V) {
+//    arl_str_hat_int_elem* slot; 
+//    //str_hat_slot_for(H, K, &slot); 
+//    size_t h = hat_hash_djb2(H, K, strlen(K)); 
+//    slot = arl_at(&hat_slots(H), h);
+//    //arl_find_str(slot, K); 
+//    char** slot_items = (char**)arl_items(slot);
+//    size_t len = arl_len(slot);
+//    arl_item_type(slot)* it = arl_find_str(slot_items, K);
+//    //arl_item_type(slot)* it = _arl_find_str_impl(slot_items, K,  len);
+//
+//    if (it) { it->v = V; } 
+//    else { arl_append(slot, ((hat_elem_type(H)){.k=K, .v=V})); ++hat_size(H); } 
+//    if (arl_err(slot)) { _hat_set_error(H); } 
+//}
 #endif
