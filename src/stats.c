@@ -75,6 +75,10 @@ void print_freqs(Stats* st) {
     }
     
     for (size_t i = 0; i < range; ++i) {
-        printf("%ld: %ld\n", i + st->min, frqs[i]);
+        if (frqs[i])
+            printf("%ld: %ld\n", i + st->min, frqs[i]);
     }
+
+    puts("===");
+    printf("#slots: %ld\n", st->n);
 }

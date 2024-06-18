@@ -10,6 +10,9 @@ HASHI_HEADERS=$(wildcard $(HASHI_INCLUDE)/*.h)
 HASHI_SRCS=$(wildcard $(HASHI_SRCDIR)/*.c)
 HASHI_OBJ=$(HASHI_SRCS:src/%.c=$(HASHI_OBJDIR)/%.o)
 
+collisions: $(HASHI_OBJ)
+	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
+
 count-words8-arl: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
 

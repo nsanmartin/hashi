@@ -30,9 +30,6 @@ collisions-mua: $(OBJ)
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -o build/$@-E.c $@.c
 	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $@.c $^
 
-collisions: $(OBJ)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $@.c $^
-
 test_mutarr: utests/test_mutarr.c $(OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -o build/$@ $^ 
 

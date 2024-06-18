@@ -122,41 +122,20 @@
 } while(0)
 
 
-//typedef struct { char* k; int v; } str_hat_int_elem;
-//
-//typedef struct {
-//    str_hat_int_elem* items;
-//    size_t len;
-//    size_t capacity;
-//} arl_str_hat_int_elem;
-//
-//typedef struct {
-//    arl_str_hat_int_elem* items;
-//    size_t len;
-//    size_t capacity;
-//} arl_arl_str_hat_int_elem;
-//
-//typedef struct {
-//    arl_arl_str_hat_int_elem slots;
-//    size_t size;
-//    str_hat_int_elem _elem;
-//    char* _k;
-//    int _v;
-//} str_hat_int;
-//
-//static inline void str_hat_int_update(str_hat_int* H,char* K, int V) {
-//    arl_str_hat_int_elem* slot; 
-//    //str_hat_slot_for(H, K, &slot); 
-//    size_t h = hat_hash_djb2(H, K, strlen(K)); 
-//    slot = arl_at(&hat_slots(H), h);
-//    //arl_find_str(slot, K); 
-//    char** slot_items = (char**)arl_items(slot);
-//    size_t len = arl_len(slot);
-//    arl_item_type(slot)* it = arl_find_str(slot_items, K);
-//    //arl_item_type(slot)* it = _arl_find_str_impl(slot_items, K,  len);
-//
-//    if (it) { it->v = V; } 
-//    else { arl_append(slot, ((hat_elem_type(H)){.k=K, .v=V})); ++hat_size(H); } 
-//    if (arl_err(slot)) { _hat_set_error(H); } 
-//}
+#define str_hat_free_keys_cleanup(H) do { \
+    for (arl_iter_type(&hat_slots(H)) __s_f_hat = arl_iter(&hat_slots(H)) \
+        ; __s_f_hat \
+        ; __s_f_hat = arl_iter_next(&hat_slots(H), __s_f_hat) \
+    ) { \
+        for (arl_iter_type(__s_f_hat) __k_f_hat = arl_iter(__s_f_hat) \
+            ; __k_f_hat \
+            ; __k_f_hat = arl_iter_next(__s_f_hat, __k_f_hat) \
+        ) { \
+            free(__k_f_hat->k); \
+        } \
+        arl_cleanup(__s_f_hat); \
+    } \
+} while(0)
+
+
 #endif
