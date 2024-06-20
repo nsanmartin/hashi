@@ -66,7 +66,7 @@ int run(str_hat_size_t* ht) {
         process_line(line, ht);
     }
 
-    arl_size_t* lengths = &arl_empty(size_t);
+    arl_size_t* lengths = &arl_values_empty(size_t);
     for (arl_iter_type(&hat_slots(ht)) it = arl_iter(&hat_slots(ht))
         ; it
         ; it = arl_iter_next(&hat_slots(ht), it)

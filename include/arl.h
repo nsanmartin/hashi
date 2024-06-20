@@ -52,8 +52,8 @@ typedef struct { \
     Type** items; \
     } arl_of_ptr(Type) 
 
-#define arl_empty(Type) (arl_of(Type)){0}
 #define arl_values_empty(Type) (arl_of(Type)){.cmp=arl_cmp_default}
+#define arl_ptr_empty(Type) (arl_of_ptr(Type)){.cmp=arl_cmp_ptr_default}
 #define arl_from_array(Array, Sz) (arl_of(Type)){.items=Array, .len=Sz, .capacity=Sz}
 
 #define arl_init_calloc(A, Sz) do{\
@@ -69,7 +69,6 @@ typedef struct { \
 
 #define arl_err(A) (arl_capacity(A) == 0 && arl_len(A) == 1 )
 #define arl_at(A, Ix) ((Ix >= arl_len(A)) ? 0x0 : arl_items(A) + Ix)
-#define arl_ptr_empty(Type) (arl_of_ptr(Type)){0}
 #define arl_item_type(M) typeof(*arl_items(M))
 #define arl_iter_type(M) typeof(arl_items(M))
 #define arl_item_size(M) sizeof(*arl_items(M))

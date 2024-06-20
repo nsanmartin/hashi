@@ -38,7 +38,7 @@ typedef struct { int x[256]; int y; } Bar;
 typedef_arl(Bar);
 
 int arl_not_found(void) {
-    arl_int* x = &arl_empty(int);
+    arl_int* x = &arl_values_empty(int);
 
     arl_append(x, 1);
     utest_assert(!arl_err(x));
@@ -63,7 +63,7 @@ int arl_not_found(void) {
 
 int test_arl_1(void) {
     const size_t test_len = 10000;
-    arl_int* x = &arl_empty(int);
+    arl_int* x = &arl_values_empty(int);
     for (size_t i = 0; !arl_err(x) && i < test_len; ++i) {
         arl_append(x, 3*i);
         if (i) { utest_assert_clean(x); } else { utest_assert(x); }
@@ -80,7 +80,7 @@ int test_arl_1(void) {
 
 
 int test_arl_2(void) {
-    arl_Foo* x = &arl_empty(Foo);
+    arl_Foo* x = &arl_values_empty(Foo);
     utest_assert(arl_len(x) == 0);
     arl_append(x, ((Foo){.x=4,.y=7,.f=0}));
     utest_assert(!arl_err(x));
@@ -148,7 +148,7 @@ int test_arl_it(void) {
     const int min = -999;
     const int max = 999;
 
-    arl_int* x = &arl_empty(int);
+    arl_int* x = &arl_values_empty(int);
     arl_append(x, min);
     utest_assert(!arl_err(x));
 
@@ -179,7 +179,7 @@ int test_arl_it(void) {
 }
 
 int test_arl_calloc(void) {
-    arl_int* x = &arl_empty(int);
+    arl_int* x = &arl_values_empty(int);
     arl_init_calloc(x, 100);
     utest_assert(!arl_err(x));
 
@@ -234,7 +234,7 @@ int test_arl_find_str(void) {
 
 /* this shoul not compile:
 * int test_bad_typed(void) {
-*     arl_of(Foo)* b = &arl_empty(Foo);
+*     arl_of(Foo)* b = &arl_values_empty(int);
 *     utest_assert(!arl_err(b));
 *     arl_append(b, 1);
 *     utest_assert(!arl_err(b));
