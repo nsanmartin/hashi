@@ -1,5 +1,4 @@
 #ifndef __HASHI_MUA_H__
-#define __HASHI_MUA_H__
 
 #include <stddef.h>
 #include <stdlib.h>

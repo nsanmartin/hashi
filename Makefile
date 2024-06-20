@@ -22,6 +22,10 @@ test_hat: utests/test_hat.c $(OBJ)
 test_hat-E: $(OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ build/$@.c $^ -lm
 
+test_da: utests/test_da.c
+	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ $^
+
+
 test_mua: utests/test_mua.c
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $<
 	$(CC) $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@ $^

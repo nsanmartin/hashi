@@ -15,16 +15,45 @@
  *      T* items;
  *      size_t len;
  *      size_t capacity;
+ *      int (*cmp)(const void* items, const void* elem));
  * } arl_T;
  *
  * But a pointer cannot be passed to this macro, ie.m typedef_arl(int*) won't compile. For that, typedef_arl_prt 
  * shallbe used.
  */
-#define typedef_arl(Type) typedef struct { Type* items; size_t len; size_t capacity; } arl_of(Type)
+
+
+// typedef struct garl garl;
+// typedef struct garl { 
+//     int (*cmp)(garl* a, const void* items, const void* elem); 
+//     size_t len; 
+//     size_t capacity; 
+// } garl;
+
+typedef struct {
+    const void* item;
+    const void* elem;
+    size_t itsz;
+} ArlCmp;
+
+#define typedef_arl(Type) \
+typedef struct { \
+    int (*cmp)(ArlCmp); \
+    size_t len; \
+    size_t capacity; \
+    Type* items; \
+    } arl_of(Type) 
+
 #define typedef_arl_ptr(Type) \
-    typedef struct { Type** items; size_t len; size_t capacity; } arl_of_ptr(Type)
+typedef struct { \
+    int (*cmp)(ArlCmp); \
+    size_t len; \
+    size_t capacity; \
+    Type** items; \
+    } arl_of_ptr(Type) 
 
 #define arl_empty(Type) (arl_of(Type)){0}
+#define arl_values_empty(Type) (arl_of(Type)){.cmp=arl_cmp_default}
 #define arl_from_array(Array, Sz) (arl_of(Type)){.items=Array, .len=Sz, .capacity=Sz}
 
 #define arl_init_calloc(A, Sz) do{\
@@ -36,6 +65,7 @@
 #define arl_len(A) ((A)->len)
 #define arl_items(M) ((M)->items)
 #define arl_capacity(M) ((M)->capacity)
+#define arl_cmp(M) ((M)->cmp)
 
 #define arl_err(A) (arl_capacity(A) == 0 && arl_len(A) == 1 )
 #define arl_at(A, Ix) ((Ix >= arl_len(A)) ? 0x0 : arl_items(A) + Ix)
@@ -50,6 +80,45 @@
     if (!arl_err(A)) { (A)->items[(A)->len++] = Elem; } \
 } while(0)
 
+
+int arl_cmp_default(ArlCmp p) { return strncmp(p.item, p.elem, p.itsz); }
+
+int arl_cmp_ptr_default(ArlCmp p) {
+    return p.itsz
+        ? strncmp(*(char**)p.item, *(char**)p.elem, p.itsz)
+        : strcmp(*(char**)p.item, *(char**)p.elem)
+        ;
+}
+int arl_cmp_values(size_t itsz, const void* item, const void* elem) {
+    return strncmp(item, elem, itsz);
+}
+
+int arl_cmp_strings(size_t itsz, const void* item, const void* elem) {
+    (void)itsz;
+    return strcmp(item, elem);
+}
+// static inline void* _arl_find_or_default(
+//     char* items,
+//     char* x,
+//     size_t itsz,
+//     size_t len,
+//     size_t* capacity,
+//     int (*compar)(ArlCmp)
+// ) {}
+
+static inline void* _arl_find(
+    char* items,
+    char* x,
+    size_t itsz,
+    size_t len,
+    int (*compar)(ArlCmp p)
+) {
+    for (size_t i = 0; i < len; ++i) {
+        char* addr = items + itsz * i;
+        if (compar((ArlCmp){.item=addr, .elem=x, .itsz=itsz}) == 0) { return addr; }
+    }
+    return 0x0;
+}
 
 static inline void* _arl_find_prefix_or_empty_impl(
     char* items, char* x, size_t prefix_len, size_t item_sz, size_t len, size_t capacity
@@ -90,8 +159,19 @@ static inline void* _arl_find_str_impl(
 #define arl_find_prefix(M, X, PrefixLen) \
     _arl_find_prefix_impl((char*)arl_items(M), (char*)&X, PrefixLen, arl_item_size(M), arl_len(M))
 
+//    char* items,
+//    char* x,
+//    size_t itsz,
+//    size_t len,
+//    int (*compar)(const void* item, const void* elem)
 #define arl_find(M, X) \
-    _arl_find_impl((char*)arl_items(M), (char*)&X, arl_item_size(M), arl_item_size(M), arl_len(M))
+    _arl_find( \
+        (char*)arl_items(M), \
+        (char*)&X, \
+        arl_item_size(M), \
+        arl_len(M), \
+        arl_cmp(M) \
+    )
 
 #define arl_find_str(M, X) \
     _arl_find_str_impl((char**)arl_items(M), X, arl_item_size(M), arl_len(M))

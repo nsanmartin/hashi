@@ -3,32 +3,22 @@
 
 #define utest_arl_assert_find_str(A, V) do{ \
     arl_item_type(A) __value_ = V; \
-    arl_item_type(A)* it = arl_find_prefix(A, __value_, arl_item_size(A)); \
+    arl_item_type(A)* it = arl_find(A, __value_); \
     utest_assert_clean(it); \
     utest_assert_clean(strcmp(*it, V) == 0); \
 } while(0)
 
-#define utest_arl_assert_find_str2(A, V) do{ \
-    arl_item_type(A)* it = arl_find_str(A, V); \
-    utest_assert_clean(it); \
-    utest_assert_clean(strcmp(*it, V) == 0); \
-} while(0)
 
 #define utest_arl_assert_find(A, V) do{ \
     arl_item_type(A) __value_ = V; \
-    arl_item_type(A)* it = arl_find_prefix(A, __value_, arl_item_size(A)); \
+    arl_item_type(A)* it = arl_find(A, __value_); \
     utest_assert_clean(it); \
     utest_assert_clean(*it == V); \
 } while(0)
 
 #define utest_arl_assert_find_not(A, V) do{ \
     arl_item_type(A) __value_ = V; \
-    arl_item_type(A)* it = arl_find_prefix(x, __value_, arl_item_size(A)); \
-    utest_assert_clean(!it); \
-} while(0)
-
-#define utest_arl_assert_find_not2(Mua, V) do{ \
-    arl_item_type(x)* it = arl_find_str(x, V); \
+    arl_item_type(A)* it = arl_find(A, __value_); \
     utest_assert_clean(!it); \
 } while(0)
 
@@ -43,6 +33,9 @@ typedef struct { int x, y; float f; } Foo;
 typedef_arl(Foo);
 typedef_arl_ptr(char);
 typedef_arl_ptr(Foo);
+
+typedef struct { int x[256]; int y; } Bar;
+typedef_arl(Bar);
 
 int arl_not_found(void) {
     arl_int* x = &arl_empty(int);
@@ -116,7 +109,8 @@ int test_arl_string(void) {
 }
 
 int test_arl_find_int(void) {
-    arl_int* x = &arl_empty(int);
+    arl_int* x = &arl_values_empty(int);
+
     arl_append(x, 13);
     utest_assert(!arl_err(x));
     arl_append(x, 9);
@@ -134,6 +128,7 @@ int test_arl_find_int(void) {
 
 int test_arl_find_string(void) {
     arl_char_ptr* x = &arl_ptr_empty(char);
+    x->cmp =  arl_cmp_default;
     arl_append(x, "foo");
     utest_assert(!arl_err(x));
 
@@ -203,6 +198,7 @@ int test_arl_calloc(void) {
 
 int test_arl_find_str(void) {
     arl_char_ptr* x = &arl_ptr_empty(char);
+    x->cmp =  arl_cmp_ptr_default;
     char* foo0 = strdup("foo");
     char* foo1 = strdup("foo");
     char* bar0 = strdup("bar");
@@ -216,14 +212,14 @@ int test_arl_find_str(void) {
     arl_append(x, bar0);
     utest_assert_clean(!arl_err(x));
 
-    utest_arl_assert_find_str2(x, foo1);
-    utest_arl_assert_find_str2(x, "foo");
-    utest_arl_assert_find_not2(x, "foobar");
-    utest_arl_assert_find_str2(x, bar1);
+    utest_arl_assert_find_str(x, foo1);
+    utest_arl_assert_find_str(x, "foo");
+    utest_arl_assert_find_not(x, "foobar");
+    utest_arl_assert_find_str(x, bar1);
 
-    utest_arl_assert_find_not2(x, one);
+    utest_arl_assert_find_not(x, one);
 
-    utest_arl_assert_find_not2(x, empty);
+    utest_arl_assert_find_not(x, empty);
 
     utest_finally_and_return((
         arl_cleanup(x)
@@ -236,6 +232,23 @@ int test_arl_find_str(void) {
     ));
 }
 
+/* this shoul not compile:
+* int test_bad_typed(void) {
+*     arl_of(Foo)* b = &arl_empty(Foo);
+*     utest_assert(!arl_err(b));
+*     arl_append(b, 1);
+*     utest_assert(!arl_err(b));
+* 
+*     arl_item_type(b)* value = arl_at(b, 9);
+*     utest_assert_clean(!value);
+* 
+*     value = arl_at(b, 0);
+*     utest_assert_clean (value);
+*     utest_assert_clean(*value == 1);
+* 
+*     utest_finally_and_return(arl_cleanup(b));
+* }
+*/
 int main(void) {
     int failures = arl_not_found()
         + test_arl_1()
