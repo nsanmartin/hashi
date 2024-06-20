@@ -80,7 +80,7 @@ int test_arl_1(void) {
 
 
 int test_arl_2(void) {
-    arl_Foo* x = &arl_values_empty(Foo);
+    arl_int* x = &arl_values_empty(int);
     utest_assert(arl_len(x) == 0);
     arl_append(x, ((Foo){.x=4,.y=7,.f=0}));
     utest_assert(!arl_err(x));

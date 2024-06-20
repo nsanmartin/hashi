@@ -9,6 +9,8 @@ SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 
 tests: test_hat test_arl
+	./build/test_arl
+	./build/test_hat
 
 test_arl: utests/test_arl.c
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $<
