@@ -89,14 +89,20 @@ int arl_cmp_ptr_default(ArlCmp p) {
         : strcmp(*(char**)p.item, *(char**)p.elem)
         ;
 }
-int arl_cmp_values(size_t itsz, const void* item, const void* elem) {
-    return strncmp(item, elem, itsz);
+
+int arl_cmp_substr(ArlCmp p) {
+    p.itsz = strlen(*(char**)p.elem);
+    return arl_cmp_ptr_default(p);
 }
 
-int arl_cmp_strings(size_t itsz, const void* item, const void* elem) {
-    (void)itsz;
-    return strcmp(item, elem);
-}
+//int arl_cmp_values(size_t itsz, const void* item, const void* elem) {
+//    return strncmp(item, elem, itsz);
+//}
+//
+//int arl_cmp_strings(size_t itsz, const void* item, const void* elem) {
+//    (void)itsz;
+//    return strcmp(item, elem);
+//}
 
 static inline void* _arl_find(
     char* items,

@@ -15,7 +15,12 @@
 /// non ptr k,v
 #define hat_of(Kt, Vt) _hashi_cat(hat, _hashi_cat(Kt, Vt))
 #define hat_elem_of(Kt, Vt) _hashi_cat(hat_of(Kt, Vt), elem)
+#define hat_cmp_of(Kt, Vt) _hashi_cat(hat_elem_of(Kt, Vt), cmp)
+
 #define typedef_hat(Kt, Vt) \
+    static inline int hat_cmp_of(Kt, Vt)(ArlCmp p) { \
+        return strncmp(p.item, p.elem, sizeof(Kt)); \
+    } \
 	typedef struct { Kt k; Vt v; } hat_elem_of(Kt, Vt); \
     typedef_arl(hat_elem_of(Kt, Vt)); \
     typedef_arl(arl_of(hat_elem_of(Kt, Vt))); \
@@ -28,10 +33,33 @@
     } hat_of(Kt, Vt)
 
 
-#define hat_empty(KeyT, ValT) (hat_of(KeyT, ValT)){0}
+#define hat_empty(Kt, Vt) \
+    (hat_of(Kt, Vt)){.slots={.cmp=hat_cmp_of(Kt,Vt)}}
+
+#define str_hat_empty(Vt) \
+    (str_hat_of(Vt)){.slots={.cmp=0}}
+
+    //(str_hat_of(Vt)){.slots={.cmp=hat_cmp_of(Kt,Vt)}}
+
+#define hat_init2(H, Cpcty) \
+    do{ arl_init_calloc(&hat_slots(H), Cpcty); } while(0)
+
+//TODO: check error after append
+//
+        //arl_append(&hat_slots(H), (arl_of(hat_elem_type(H))){.cmp=arl_cmp_substr}); 
+
+#define hat_of_init(Kt, Vt, H, Cpcty) \
+do{ \
+    arl_init_calloc(&hat_slots(H), Cpcty); \
+    for (arl_iter_type(&hat_slots(H)) __s_init_hat = arl_iter(&hat_slots(H)) \
+        ; __s_init_hat \
+        ; __s_init_hat = arl_iter_next(&hat_slots(H), __s_init_hat) \
+    ) { __s_init_hat->cmp = hat_cmp_of(Kt,Vt); } \
+} while(0)
 
 #define hat_init(H, Cpcty) \
-    do{ arl_init_calloc(&hat_slots(H), Cpcty); } while(0)
+do{ arl_init_calloc(&hat_slots(H), Cpcty); \
+} while(0)
 
 //#define hat_init(H, Cpcty) do{ 
 //    for (size_t __hat_for_i = 0; __hat_for_i < Cpcty; ++__hat_for_i) { 
@@ -61,7 +89,7 @@
     hat_ktype(H) __hat_k = K; \
     hat_slot_type(H)* __hat_slot; \
     hat_slot_for(H, __hat_k, &__hat_slot); \
-    arl_item_type(__hat_slot)* __hat_it = arl_find_prefix(__hat_slot, __hat_k, hat_ksz(H)); \
+    arl_item_type(__hat_slot)* __hat_it = arl_find(__hat_slot, __hat_k); \
     *OUT = __hat_it; \
 } while(0)
 
@@ -98,7 +126,7 @@
     } str_hat_of(Vt)
 
 
-#define str_hat_empty(ValT) (str_hat_of(ValT)){0}
+// #define str_hat_empty(ValT) (str_hat_of(ValT)){0}
 
 #define str_hat_slot_for(H, Klv, OUT) do{ \
     size_t __hat_h = hat_hash_djb2(H, Klv, strlen(Klv)); \
