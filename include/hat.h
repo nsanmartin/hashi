@@ -39,17 +39,12 @@
 #define str_hat_empty(Vt) \
     (str_hat_of(Vt)){.slots={.cmp=0}}
 
-    //(str_hat_of(Vt)){.slots={.cmp=hat_cmp_of(Kt,Vt)}}
-
-#define hat_init2(H, Cpcty) \
-    do{ arl_init_calloc(&hat_slots(H), Cpcty); } while(0)
 
 //TODO: check error after append
 //
         //arl_append(&hat_slots(H), (arl_of(hat_elem_type(H))){.cmp=arl_cmp_substr}); 
 
-#define hat_of_init(Kt, Vt, H, Cpcty) \
-do{ \
+#define hat_of_init(Kt, Vt, H, Cpcty) do{ \
     arl_init_calloc(&hat_slots(H), Cpcty); \
     for (arl_iter_type(&hat_slots(H)) __s_init_hat = arl_iter(&hat_slots(H)) \
         ; __s_init_hat \
@@ -57,15 +52,9 @@ do{ \
     ) { __s_init_hat->cmp = hat_cmp_of(Kt,Vt); } \
 } while(0)
 
-#define hat_init(H, Cpcty) \
-do{ arl_init_calloc(&hat_slots(H), Cpcty); \
+#define hat_init(H, Cpcty) do{ \
+    arl_init_calloc(&hat_slots(H), Cpcty); \
 } while(0)
-
-//#define hat_init(H, Cpcty) do{ 
-//    for (size_t __hat_for_i = 0; __hat_for_i < Cpcty; ++__hat_for_i) { 
-//        arl_append(&hat_slots(H), arl_hat_int_int_elem); 
-//    } 
-//} while(0);
 
 #define hat_slots(H) ((H)->slots)
 #define hat_capacity(H) arl_len(&hat_slots(H))
@@ -113,10 +102,15 @@ do{ arl_init_calloc(&hat_slots(H), Cpcty); \
 /// str key
 #define str_hat_of(Vt) _hashi_cat(str_hat, Vt)
 #define str_hat_elem_of(Vt) _hashi_cat(str_hat_of(Vt), elem)
+#define str_hat_cmp_of(Vt) _hashi_cat(str_hat_elem_of(Vt), cmp)
+
 #define typedef_str_hat(Vt) \
 	typedef struct { char* k; Vt v; } str_hat_elem_of(Vt); \
     typedef_arl(str_hat_elem_of(Vt)); \
     typedef_arl(arl_of(str_hat_elem_of(Vt))); \
+    static inline int str_hat_cmp_of(Vt)(ArlCmp p) { \
+        return strncmp(*(char**)p.item, *(char**)p.elem, strlen(p.elem)); \
+    } \
 	typedef struct { \
         arl_of(arl_of(str_hat_elem_of(Vt))) slots; \
         size_t size; \
@@ -125,6 +119,14 @@ do{ arl_init_calloc(&hat_slots(H), Cpcty); \
         Vt _v; \
     } str_hat_of(Vt)
 
+
+#define str_hat_of_init(Vt, H, Cpcty) do{ \
+    arl_init_calloc(&hat_slots(H), Cpcty); \
+    for (arl_iter_type(&hat_slots(H)) __s_init_hat = arl_iter(&hat_slots(H)) \
+        ; __s_init_hat \
+        ; __s_init_hat = arl_iter_next(&hat_slots(H), __s_init_hat) \
+    ) { __s_init_hat->cmp = str_hat_cmp_of(Vt); } \
+} while(0)
 
 // #define str_hat_empty(ValT) (str_hat_of(ValT)){0}
 

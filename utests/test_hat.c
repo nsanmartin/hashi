@@ -75,124 +75,6 @@ char* test_strings[] = {
 
 size_t test_strings_sz = sizeof(test_strings) / sizeof(test_strings[0]);
 
-//int test_hat_0(void) {
-//    hat_int_int* H = &(hat_int_int){.slots={.cmp=arl_cmp_default}};
-//    do{
-//        do{
-//            ((&((H)->slots))->items) = calloc(10, sizeof(*((&((H)->slots))->items)));
-//            if (!((&((H)->slots))->items)) {
-//                do {
-//                    ((&((H)->slots))->capacity) = 0;
-//                    ((&((H)->slots))->len) = 1;
-//                } while(0);
-//            } else {
-//                ((&((H)->slots))->len) = ((&((H)->slots))->capacity) = 10;
-//            }
-//        } while(0);
-//    } while(0);
-//    if (!(!((((&((H)->slots))->capacity) == 0 && ((&((H)->slots))->len) == 1 )))) {
-//        fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); return TestFail;
-//    };
-//
-//    typeof((H)->_elem)*it = 0x0;
-//    if (!(!it)) { fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); goto fail_cleanup; };
-//    do {
-//        typeof((H)->_k) __hat_k = 0x7fffffff;
-//        typeof(*((&((H)->slots))->items))* __hat_slot;
-//        do{
-//            size_t __hat_h = (djb2_k33_len((unsigned char*)&__hat_k, sizeof(__hat_k)) % ((&((H)->slots))->len));
-//            *&__hat_slot = ((__hat_h >= ((&((H)->slots))->len)) ? 0x0 : ((&((H)->slots))->items) + __hat_h);
-//        } while(0);
-//        typeof(*((__hat_slot)->items))* __hat_it = _arl_find(
-//            (char*)((__hat_slot)->items), (char*)&__hat_k, sizeof(*((__hat_slot)->items)), ((__hat_slot)->len), ((__hat_slot)->cmp)
-//        );
-//        *&it = __hat_it;
-//    } while(0);
-//    if (!(!it)) { fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); goto fail_cleanup; };
-//
-//    do {
-//        typeof((H)->_k) __hat_k = 0;
-//        typeof(*((&((H)->slots))->items))* __hat_slot;
-//        do{
-//            size_t __hat_h = (djb2_k33_len((unsigned char*)&__hat_k, sizeof(__hat_k)) % ((&((H)->slots))->len));
-//            *&__hat_slot = ((__hat_h >= ((&((H)->slots))->len)) ? 0x0 : ((&((H)->slots))->items) + __hat_h);
-//        } while(0);
-//        typeof(*((__hat_slot)->items))* __hat_it = _arl_find(
-//            (char*)((__hat_slot)->items), (char*)&__hat_k, sizeof(*((__hat_slot)->items)), ((__hat_slot)->len), ((__hat_slot)->cmp)
-//        );
-//        *&it = __hat_it;
-//    } while(0);
-//    if (!(!it)) { fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); goto fail_cleanup; };
-//
-//    do {
-//        typeof((H)->_k) __hat_k = 7;
-//        typeof(*((&((H)->slots))->items))* __hat_slot;
-//        do{
-//            size_t __hat_h = (djb2_k33_len((unsigned char*)&__hat_k, sizeof(__hat_k)) % ((&((H)->slots))->len));
-//            *&__hat_slot = ((__hat_h >= ((&((H)->slots))->len)) ? 0x0 : ((&((H)->slots))->items) + __hat_h);
-//        } while(0);
-//        typeof(*((__hat_slot)->items))* __hat_it = _arl_find(
-//            (char*)((__hat_slot)->items), (char*)&__hat_k, sizeof(*((__hat_slot)->items)), ((__hat_slot)->len), ((__hat_slot)->cmp)
-//        );
-//        *&it = __hat_it;
-//    } while(0);
-//    if (!(!it)) { fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); goto fail_cleanup; };
-//
-//    do {
-//        typeof((H)->_k) __hat_k = -3;
-//        typeof(*((&((H)->slots))->items))* __hat_slot;
-//        do{
-//            size_t __hat_h = (djb2_k33_len((unsigned char*)&__hat_k, sizeof(__hat_k)) % ((&((H)->slots))->len));
-//            *&__hat_slot = ((__hat_h >= ((&((H)->slots))->len)) ? 0x0 : ((&((H)->slots))->items) + __hat_h);
-//        } while(0);
-//        typeof(*((__hat_slot)->items))* __hat_it = _arl_find_prefix_impl(
-//            (char*)((__hat_slot)->items), (char*)&__hat_k, sizeof((H)->_k), sizeof(*((__hat_slot)->items)), ((__hat_slot)->len)
-//        );
-//        if (__hat_it) { __hat_it->v = 3; }
-//        else {
-//            do {
-//                if (((__hat_slot)->len) >= ((__hat_slot)->capacity)) {
-//                    do {
-//                        ((__hat_slot)->capacity) = ((__hat_slot)->capacity) ? 2 * ((__hat_slot)->capacity) : ArlDefaultInitialCapacity ;
-//
-//                        (__hat_slot)->items = realloc(((__hat_slot)->items), ((__hat_slot)->capacity) * sizeof(*((__hat_slot)->items)));
-//                        if (!(__hat_slot)->items) { perror("realloc failed");
-//                            do {
-//                                ((__hat_slot)->capacity) = 0; ((__hat_slot)->len) = 1;
-//                            } while(0);
-//                        }
-//                    } while(0);
-//                }
-//                if (!(((__hat_slot)->capacity) == 0 && ((__hat_slot)->len) == 1 )) {
-//                    (__hat_slot)->items[(__hat_slot)->len++] = ((typeof((H)->_elem)){.k=-3, .v=3});
-//                }
-//            } while(0);
-//            ++((H)->size);
-//        }
-//        if ((((__hat_slot)->capacity) == 0 && ((__hat_slot)->len) == 1 )) {
-//            do {
-//                ((&((H)->slots))->capacity) = 0;
-//                ((&((H)->slots))->len) = 1;
-//            } while(0); } } while(0);
-//    do {
-//        typeof((H)->_k) __hat_k = -3;
-//        typeof(*((&((H)->slots))->items))* __hat_slot;
-//        do{
-//            size_t __hat_h = (djb2_k33_len((unsigned char*)&__hat_k, sizeof(__hat_k)) % ((&((H)->slots))->len));
-//            *&__hat_slot = ((__hat_h >= ((&((H)->slots))->len)) ? 0x0 : ((&((H)->slots))->items) + __hat_h);
-//        } while(0);
-//        typeof(*((__hat_slot)->items))* __hat_it = _arl_find(
-//            (char*)((__hat_slot)->items), (char*)&__hat_k, sizeof(*((__hat_slot)->items)), ((__hat_slot)->len), ((__hat_slot)->cmp)
-//        );
-//        *&it = __hat_it;
-//    } while(0);
-//    if (!(it)) { fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); goto fail_cleanup; };
-//    if (!(it->k == -3)) { fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); goto fail_cleanup; };
-//    if (!(it->v == 3)) { fprintf( stderr , "\033[31m" "Test failed: %s" "\033[0m" "\n", __func__); goto fail_cleanup; };
-//
-//    do { ((void)0); return TestOk; fail_cleanup: ((void)0); return TestFail; } while(0);
-//}
-
 int test_hat_0(void) {
 
     hat_int_int* H = &hat_empty(int, int);
@@ -241,7 +123,8 @@ int test_hat_1(void) {
 
 int test_str_hat_0(void) {
     str_hat_int* H = &str_hat_empty(int);
-    hat_init(H, 10);
+    //hat_init(H, 10);
+    str_hat_of_init(int, H, 10);
     utest_assert(!hat_err(H));
     utest_assert_clean(hat_size(H) == 0);
 
