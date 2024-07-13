@@ -9,9 +9,10 @@
 
 enum { TestOk = 0, TestFail = 1 };
 
-#define utest_assert(Expr)  \
-    if (!(Expr)) { fprintf(stderr, RED "Test failed: %s" RESET "\n", __func__); return TestFail; }
-
+#define utest_assert(Expr, Tag) do{ if(!(Expr)) { goto Tag;} }while(0)
+// #define utest_assert(Expr)  
+//     if (!(Expr)) { fprintf(stderr, RED "Test failed: %s" RESET "n", __func__); return TestFail; }
+// 
 #define utest_assert_clean(Expr)  \
     if (!(Expr)) { fprintf(stderr, RED "Test failed: %s" RESET "\n", __func__); goto fail_cleanup; }
 
