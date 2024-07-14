@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <utests.h>
 
-#define T int
+#define BT int
 #include <buf.h>
 
 int test_0(void) {

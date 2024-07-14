@@ -18,17 +18,28 @@
 
 typedef struct { KT k; VT v; } LipEntryOf(KT, VT);
 
-#define T LipEntryOf(KT, VT)
-#include <arl.h>
+#define EntryT LipEntryOf(KT, VT)
+#define BT EntryT
+#include <buf.h>
+
+#define BufT BufOf(EntryT)
+
+#define lipsz(L) (L)->table.len
+#define liptab(L) &(L)->table
 
 typedef struct {
     unsigned zerok : 1;
     unsigned max_tries : 7;
     size_t inserts;
-    LipEntryOf(KT, VT)* table;
+    BufOf(EntryT) table;
 } LipOf(KT,VT);
 
-LipEntryOf(KT, VT)*
+static inline int
+lipfn(KT,VT,init)(LipOf(KT,VT)* l, size_t len) {
+    return buffn(EntryT, calloc)(liptab(l), len);
+}
+
+static inline EntryT*
 lipfn(KT, VT, set)(LipOf(KT,VT)* l, KT* k, VT* v) {
     (void)k;
     (void)v;
@@ -52,13 +63,16 @@ lipfn(KT,VT, khash)(KT* k) {
 #define KHash 
 #endif // KHash
 
-LipEntryOf(KT, VT)*
-lipfn(KT, VT, get)(LipOf(KT,VT)* l, KT* k) {
+static inline EntryT* lipfn(KT, VT, get)(LipOf(KT,VT)* l, KT* k) {
     size_t h = KHash(*k) % l->table.len;
-    return arlfn(LipEntryOf(KT, VT), at)(&l->table, h);
+    return buffn(EntryT, at)(&l->table, h);
 }
 
+static inline void lipfn(KT,VT, clean)(LipOf(KT,VT)*l) {
+    buffn(EntryT, clean)(liptab(l));
+}
 #undef KT
 #undef VT
 #undef KHash 
+#undef EntryT
 
