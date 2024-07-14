@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <utests.h>
 
+int value_cmp(void* x, void* y) {
+    return strcmp(x, y);
+}
 
 #define T int
+#define TCmp value_cmp
 #include <arl.h>
 
 typedef struct { int x, y; float f; } Foo;
@@ -10,7 +14,15 @@ typedef struct { int x, y; float f; } Foo;
 #include <arl.h>
 
 typedef char* str;
+int str_copy(str* dst, const str* src) {
+    *dst = strdup(*src);
+    return *dst == 0x0;
+}
+
+int str_compare(str* s, str* t) { return strcmp(*s, *t); }
 #define T str
+#define TCpy str_copy
+#define TCmp str_compare
 #include <arl.h>
 
 typedef Foo* Fooptr;
@@ -18,6 +30,7 @@ typedef Foo* Fooptr;
 #include <arl.h>
 
 int arl_not_found(void) {
+    int status = 1;
     ArlOf(int)* x = &(ArlOf(int)){0};
 
     int v = 1;
@@ -39,15 +52,13 @@ int arl_not_found(void) {
         utest_assert(!value, clean);
     }
 
-    arlfn(int, clean)(x);
-    return 0;
-clean:
-    arlfn(int, clean)(x);
-    return 1;
+    clean_and_ret(status, clean, arlfn(int, clean)(x));
 }
 
 int test_arl_1(void) {
+    int status = 1;
     const size_t test_len = 10000;
+
     ArlOf(int)* x = &(ArlOf(int)){0};
 
     for (size_t i = 0; i < test_len; ++i) {
@@ -64,173 +75,202 @@ int test_arl_1(void) {
         utest_assert(*value == 3*(int)i, clean);
     }
     
-    arlfn(int, clean)(x);
-    return 0;
-clean:
-    arlfn(int, clean)(x);
-    return 1;
+    clean_and_ret(status, clean, arlfn(int, clean)(x));
 }
 
-//
-//int test_arl_2(void) {
-//    arl_Foo* x = &arl_empty(Foo);
-//    utest_assert(arl_len(x) == 0);
-//    arl_append(x, ((Foo){.x=4,.y=7,.f=0}));
-//    utest_assert(!arl_err(x));
-//    arl_item_type(x)* f = arl_at(x, 0);
-//    utest_assert_clean(f);
-//    utest_assert_clean(f->x == 4 && f->y == 7 && f->f == 0);
-//
-//    utest_finally_and_return(arl_cleanup(x));
-//}
-//
-//int test_arl_string(void) {
-//    arl_char_ptr* x = &arl_ptr_empty(char);
-//    arl_append(x, "foo");
-//    utest_assert(!arl_err(x));
-//
-//    arl_append(x, "bar");
-//    utest_assert_clean(!arl_err(x));
-//    arl_item_type(x)* v = arl_at(x, 0);
-//    utest_assert_clean(v);
-//    utest_assert_str_eq_clean("foo", *v);
-//    v = arl_at(x, 1);
-//    utest_assert_clean(v);
-//    utest_assert_str_eq_clean("bar", *v);
-//
-//    utest_finally_and_return(arl_cleanup(x));
-//}
-//
-//int test_arl_find_int(void) {
-//    arl_int* x = &arl_empty(int);
-//    arl_append(x, 13);
-//    utest_assert(!arl_err(x));
-//    arl_append(x, 9);
-//    utest_assert_clean(!arl_err(x));
-//
-//    
-//    utest_arl_assert_find(x, 13);
-//    utest_arl_assert_find(x, 9);
-//
-//    utest_arl_assert_find_not(x, 1);
-//    utest_arl_assert_find_not(x, 0);
-//
-//    utest_finally_and_return(arl_cleanup(x));
-//}
-//
-//int test_arl_find_string(void) {
-//    arl_char_ptr* x = &arl_ptr_empty(char);
-//    arl_append(x, "foo");
-//    utest_assert(!arl_err(x));
-//
-//    arl_append(x, "bar");
-//    utest_assert_clean(!arl_err(x));
-//
-//    utest_arl_assert_find_str(x, "foo");
-//    utest_arl_assert_find_str(x, "bar");
-//
-//    utest_arl_assert_find_not(x, "1");
-//    utest_arl_assert_find_not(x, "");
-//
-//    utest_finally_and_return(arl_cleanup(x));
-//}
-//
-//int test_arl_it(void) {
-//    const int min = -999;
-//    const int max = 999;
-//
-//    arl_int* x = &arl_empty(int);
-//    arl_append(x, min);
-//    utest_assert(!arl_err(x));
-//
-//    for (int i = min+ 1; i < max + 1; ++i) {
-//        arl_append(x, i);
-//        utest_assert_clean(!arl_err(x));
-//    }
-//
-//    arl_iter_type(x) it = arl_iter(x);
-//    utest_assert_clean(it);
-//    utest_assert_clean(*it == min);
-//
-//    for (int i = min+1; i < max+1; ++i) {
-//        it = arl_iter_next(x, it);
-//        utest_assert_clean(it);
-//        utest_assert_clean(*it == i);
-//    }
-//
-//
-//    int i = min;
-//    for(it = arl_iter(x) ; it; ++i) {
-//        if (*it != i) {
-//            utest_assert_clean(*it == i);
-//        }
-//        it = arl_iter_next(x, it);
-//    }
-//    utest_finally_and_return(arl_cleanup(x));
-//}
-//
-//int test_arl_calloc(void) {
-//    arl_int* x = &arl_empty(int);
-//    arl_init_calloc(x, 100);
-//    utest_assert(!arl_err(x));
-//
-//    for (arl_item_type(x)* it = arl_iter(x); it; it = arl_iter_next(x, it)) {
-//        utest_assert_clean(it);
-//        utest_assert_clean(*it == 0);
-//    }
-//
-//    for (size_t i = 0; i < 100; ++i) {
-//        utest_assert_clean(arl_at(x, i));
-//        utest_assert_clean(*arl_at(x, i) == 0);
-//    }
-//
-//    utest_finally_and_return(arl_cleanup(x));
-//}
-//
-//int test_arl_find_str(void) {
-//    arl_char_ptr* x = &arl_ptr_empty(char);
-//    char* foo0 = strdup("foo");
-//    char* foo1 = strdup("foo");
-//    char* bar0 = strdup("bar");
-//    char* bar1 = strdup("bar");
-//    char* one = strdup("1");
-//    char* empty = strdup("");
-//
-//    arl_append(x, foo0);
-//    utest_assert(!arl_err(x));
-//
-//    arl_append(x, bar0);
-//    utest_assert_clean(!arl_err(x));
-//
-//    utest_arl_assert_find_str2(x, foo1);
-//    utest_arl_assert_find_str2(x, "foo");
-//    utest_arl_assert_find_not2(x, "foobar");
-//    utest_arl_assert_find_str2(x, bar1);
-//
-//    utest_arl_assert_find_not2(x, one);
-//
-//    utest_arl_assert_find_not2(x, empty);
-//
-//    utest_finally_and_return((
-//        arl_cleanup(x)
-//        , free(foo0)
-//        , free(foo1)
-//        , free(bar0)
-//        , free(bar1)
-//        , free(one)
-//        , free(empty)
-//    ));
-//}
+
+int test_arl_2(void) {
+    int status = 1;
+
+    ArlOf(Foo)* x = &(ArlOf(Foo)){0};
+
+    utest_assert(x->len == 0, clean);
+
+    int err = arlfn(Foo, append)(x, &(Foo){.x=4,.y=7,.f=0});
+    utest_assert(!err, clean);
+    Foo* f = arlfn(Foo, at)(x, 0);
+    utest_assert(f, clean);
+    utest_assert(f->x == 4 && f->y == 7 && f->f == 0, clean);
+
+    clean_and_ret(status, clean, arlfn(Foo, clean)(x));
+}
+
+int test_arl_string(void) {
+    int status = 1;
+
+    ArlOf(str)* x = &(ArlOf(str)){0};
+    str s = "foo";
+    int err = arlfn(str, append)(x, &s);
+    utest_assert(!err, clean);
+
+    s = "bar";
+    err = arlfn(str, append)(x, &s);
+    utest_assert(!err, clean);
+
+    str* v = arlfn(str, at)(x, 0);
+    utest_assert(v, clean);
+    utest_assert(strcmp("foo", *v) == 0, clean);
+
+    v = arlfn(str, at)(x, 1);
+    utest_assert(v, clean);
+    utest_assert(strcmp("bar", *v) == 0, clean);
+
+
+    clean_and_ret(status, clean, arlfn(str, clean)(x));
+}
+
+
+int test_arl_find_int(void) {
+    int status = 1;
+
+    ArlOf(int)* x = &(ArlOf(int)){0};
+    //arl_int* x = &arl_empty(int);
+    int v = 13;
+    int err = arlfn(int, append)(x, &v);
+    //arl_append(x, 13);
+    utest_assert(!err, clean);
+    v = 9;
+    err = arlfn(int, append)(x, &v);
+    utest_assert(!err, clean);
+
+    
+    v = 13;
+    int* ptr = arlfn(int, find)(x, &v);
+    utest_assert(ptr, clean);
+
+    v = 9;
+    ptr = arlfn(int, find)(x, &v);
+    utest_assert(ptr, clean);
+
+    v = 1;
+    ptr = arlfn(int, find)(x, &v);
+    utest_assert(!ptr, clean);
+    
+    v = 0;
+    ptr = arlfn(int, find)(x, &v);
+    utest_assert(!ptr, clean);
+
+    clean_and_ret(status, clean, arlfn(int, clean)(x));
+}
+
+int test_arl_find_string(void) {
+    int status = 1;
+    ArlOf(str)* x = &(ArlOf(str)){0};
+
+    str s = "foo";
+    int err = arlfn(str, append)(x, &s);
+    utest_assert(!err, clean);
+
+    s = "bar";
+    err = arlfn(str, append)(x, &s);
+    utest_assert(!err, clean);
+
+    s = "foo";
+    str* ptr = arlfn(str, find)(x, &s);
+    utest_assert(ptr, clean);
+
+    s = "bar";
+    ptr = arlfn(str, find)(x, &s);
+    utest_assert(ptr, clean);
+
+    s = "1";
+    ptr = arlfn(str, find)(x, &s);
+    utest_assert(!ptr, clean);
+
+    s = "";
+    ptr = arlfn(str, find)(x, &s);
+    utest_assert(!ptr, clean);
+
+    clean_and_ret(status, clean, arlfn(str, clean)(x));
+}
+
+int test_arl_it(void) {
+    int status = 1;
+    const int min = -999;
+    const int max = 999;
+
+    ArlOf(int)* x = &(ArlOf(int)){0};
+    int err = arlfn(int, append)(x, &min);
+    utest_assert(!err, clean);
+
+    for (int i = min+ 1; i < max + 1; ++i) {
+        err = arlfn(int, append)(x, &i);
+        utest_assert(!err, clean);
+    }
+
+    int* it = arlfn(int, iter)(x);
+    utest_assert(it, clean);
+    utest_assert(*it == min, clean);
+
+    for (int i = min; i < max+1; ++i, ++it) {
+        utest_assert(it, clean);
+        utest_assert(*it == i, clean);
+    }
+
+
+    int i = min;
+    int* end = arlfn(int, end)(x);
+    for(it = arlfn(int, iter(x)) ; it != end; ++i, ++it) {
+        utest_assert(*it == i, clean);
+    }
+
+    clean_and_ret(status, clean, arlfn(int, clean)(x));
+}
+
+
+
+int test_arl_find_str(void) {
+    int status = 1;
+
+    ArlOf(str)* x = &(ArlOf(str)){0};
+
+    char* foo0 = strdup("foo");
+    char* foo1 = strdup("foo");
+    char* bar0 = strdup("bar");
+    char* bar1 = strdup("bar");
+    char* one = strdup("1");
+    char* empty = strdup("");
+
+    int err = arlfn(str, append)(x, &foo0);
+    utest_assert(!err, clean);
+
+    err = arlfn(str, append)(x, &bar0);
+    utest_assert(!err, clean);
+
+
+    str* ptr = arlfn(str, find)(x, &foo1);
+    utest_assert(ptr, clean);
+
+    str lit = "foo";
+    ptr = arlfn(str, find)(x, &lit);
+    utest_assert(ptr, clean);
+
+    lit = "foobar";
+    ptr = arlfn(str, find)(x, &lit);
+    utest_assert(!ptr, clean);
+
+    ptr = arlfn(str, find)(x, &bar1);
+    utest_assert(ptr, clean);
+
+    ptr = arlfn(str, find)(x, &one);
+    utest_assert(!ptr, clean);
+
+    ptr = arlfn(str, find)(x, &empty);
+    utest_assert(!ptr, clean);
+
+
+    clean_and_ret(status, clean, arlfn(str, clean)(x));
+}
 
 int main(void) {
     int failures = arl_not_found()
         + test_arl_1()
-        //+ test_arl_2()
-        //+ test_arl_string()
-        //+ test_arl_find_int()
-        //+ test_arl_find_string()
-        //+ test_arl_it()
-        //+ test_arl_find_str()
+        + test_arl_2()
+        + test_arl_string()
+        + test_arl_find_int()
+        + test_arl_find_string()
+        + test_arl_it()
+        + test_arl_find_str()
         ;
 
 	if (failures) {

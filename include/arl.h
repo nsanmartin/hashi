@@ -35,7 +35,7 @@ ArlFn(T, back)(ArlOf(T)* a) {
 
 #ifndef TCpy
 static inline int
-arlfn(T, elem_cpy)(T* dst, T* src) {
+arlfn(T, elem_cpy)(T* dst, const T* src) {
     memmove(dst, src, sizeof(T));
     return 0;
 }
@@ -44,7 +44,7 @@ arlfn(T, elem_cpy)(T* dst, T* src) {
 
 
 static inline int
-ArlFn(T, append)(ArlOf(T)* a, T* ptr) {
+ArlFn(T, append)(ArlOf(T)* a, const T* ptr) {
     if (a->len >= a->capacity) {
         if (ArlFn(T, realloc)(a)) { /*error in realloc*/ return  1; }
     }
