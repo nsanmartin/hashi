@@ -1,5 +1,5 @@
 //
-// Arl
+// Arl (Array list)
 //
 
 #include <ohashi.h>
@@ -15,6 +15,15 @@ typedef struct {
     size_t len;
     size_t capacity;
 } ArlOf(T);
+
+
+static inline int
+ArlFn(T, calloc)(ArlOf(T)* a, size_t len) {
+    if (a->items) { return -1; }
+    a->items = calloc(len, sizeof(T)); 
+    a->len = len;
+    return a->items == 0;
+}
 
 static inline int
 ArlFn(T, realloc)(ArlOf(T)* a) {
