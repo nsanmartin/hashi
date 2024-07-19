@@ -21,5 +21,6 @@ enum { ArlDefaultInitialCapacity = 2 };
 #define LipOf(KT, VT) CAT_IND(CAT_IND(lip, KT), VT)
 #define lipfn(KT, VT, Name) CAT_IND(LipOf(KT, VT), Name)
 #define LipEntryOf(KT, VT) CAT_IND(LipOf(KT, VT), entry)
+#define LipZeroOf(KT, VT) CAT_IND(LipOf(KT, VT), zero)
 
 #endif
