@@ -139,8 +139,8 @@ static inline int lipfn(KT, VT, del)(LipOf(KT,VT)* l, KT* k) {
     if (!e || !found) { return -1; }
     --l->inserts;
     return KTCpy(&e->k, &(KT){0});
-
 }
+
 
 static inline void lipfn(KT,VT, clean)(LipOf(KT,VT)*l) {
     buffn(EntryT, clean)(liptab(l));
