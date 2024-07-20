@@ -125,6 +125,23 @@ static inline VT* lipfn(KT, VT, get)(LipOf(KT,VT)* l, KT* k) {
     return &e->v;
 }
 
+
+static inline int lipfn(KT, VT, del)(LipOf(KT,VT)* l, KT* k) {
+    if (lipfn(KT,VT,is_zero)(k)) {
+        if (!l->zerok) { return -1; }
+        l->zerok = 0;
+        --l->inserts;
+        return 0;
+    }
+
+    bool found = 0;
+    EntryT* e = lipfn(KT,VT,find)(l, k, &found);
+    if (!e || !found) { return -1; }
+    --l->inserts;
+    return KTCpy(&e->k, &(KT){0});
+
+}
+
 static inline void lipfn(KT,VT, clean)(LipOf(KT,VT)*l) {
     buffn(EntryT, clean)(liptab(l));
 }
