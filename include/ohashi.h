@@ -23,4 +23,13 @@ enum { ArlDefaultInitialCapacity = 2 };
 #define LipEntryOf(KT, VT) CAT_IND(LipOf(KT, VT), entry)
 #define LipZeroOf(KT, VT) CAT_IND(LipOf(KT, VT), zero)
 
-#endif
+static inline int
+hashi_compare_bytes(const void* s1, const void* s2, size_t n) {
+    return memcmp(s1, s2, n);
+}
+
+static inline int
+hashi_copy_bytes(void* dest, const void* src, size_t n) {
+    memmove(dest, src, n); return 0;
+}
+#endif // __HASHI_G_Functions_H__

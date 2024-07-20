@@ -42,13 +42,13 @@ ArlFn(T, back)(ArlOf(T)* a) {
     return arl_len(a) ? ArlFn(T, at)(a, arl_len(a) - 1) : 0x0;
 }
 
+#ifndef TCmp
+#define TCmp(S1, S2) hashi_compare_bytes(S1, S2, sizeof(T))
+#endif // TCmp
+
+
 #ifndef TCpy
-static inline int
-arlfn(T, elem_cpy)(T* dst, const T* src) {
-    memmove(dst, src, sizeof(T));
-    return 0;
-}
-#define TCpy  arlfn(T, elem_cpy)
+#define TCpy(Dst, Src) hashi_copy_bytes(Dst, Src, sizeof(T))
 #endif // TCpy
 
 
