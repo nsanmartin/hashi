@@ -16,6 +16,9 @@ collisions: $(HASHI_OBJ)
 count-words8-arl: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
 
+count-words8-mua: $(HASHI_OBJ)
+	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
+
 count-words8: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
 

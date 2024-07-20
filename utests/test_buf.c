@@ -34,7 +34,7 @@ int main(void) {
 	if (failures) {
 		fprintf(stderr, "%d test%s failed\n", failures, (failures == 1 ? "" : "s"));
 	} else {
-		puts("Tests Ok!");
+		printf("%s: Tests Ok!\n", __FILE__);
 	}
 	return failures;
 }

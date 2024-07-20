@@ -8,7 +8,9 @@ HEADERS=$(wildcard $(INCLUDE)/*.h)
 SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 
-tests: test_lip
+tests: test_lip test_arl test_buf
+	build/test_lip && build/test_arl && build/test_buf
+
 
 test_buf: utests/test_buf.c
 	$(CC) -E $(CFLAGS) -I$(INCLUDE) -Iutests -o build/$@-E.c $<

@@ -161,7 +161,8 @@ int test_5(void) {
 
 
 int main(void) {
-    int failures = test_0()
+    int failures 
+        = test_0()
         + test_1()
         + test_2()
         + test_3()
@@ -177,7 +178,7 @@ int main(void) {
             (failures == 1 ? "" : "s")
         );
 	} else {
-		puts("Tests Ok!");
+		printf("%s: Tests Ok!\n", __FILE__);
 	}
 	return failures;
 }
