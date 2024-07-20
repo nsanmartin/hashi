@@ -21,6 +21,7 @@ typedef struct { KT k; VT v; } LipEntryOf(KT, VT);
 
 #define EntryT LipEntryOf(KT, VT)
 #define BT EntryT
+//TODO: clean elem fn
 #include <buf.h>
 
 #define BufT BufOf(EntryT)
@@ -65,25 +66,25 @@ static inline int
 lipfn(KT,VT,is_zero)(KT* k) { return KTCmp(k, &(KT){0}) == 0; }
 
 #ifndef KHash
-static inline int
-lipfn(KT,VT, khash)(KT* k) {
-    unsigned long hash = 5381;
-    int c;
-    const char* end = (const char*)k + sizeof(KT);
-
-    for (const char* s = (const char*)k; s < end; ++s) {
-        c = *s;
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    }
-
-    return hash;
-}
-#define KHash 
+#define KHash(S) hashi_hash_bytes((char*)S, sizeof(KT))
+//static inline int
+//lipfn(KT,VT, khash)(KT* k) {
+//    unsigned long hash = 5381;
+//    int c;
+//    const char* end = (const char*)k + sizeof(KT);
+//
+//    for (const char* s = (const char*)k; s < end; ++s) {
+//        c = *s;
+//        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+//    }
+//
+//    return hash;
+//}
 #endif // KHash
 
 static inline EntryT*
 lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
-    size_t h = KHash(*k) % l->table.len;
+    size_t h = KHash(k) % l->table.len;
     unsigned nmovs = 0;
     while (nmovs++ < l->max_tries) {
         EntryT* e = buffn(EntryT, at)(&l->table, h);

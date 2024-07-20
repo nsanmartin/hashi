@@ -44,37 +44,24 @@ int run(size_t initial_capacity, size_t n_words) {
     if(err) { perror("lip init"); return -1;}
 
     if (fill_table(ht, n_words)) { return -1; }
+    
+    typeof(lip_buf(ht))* buf = &lip_buf(ht);
 
-    ///
-    arl_size_t* lengths = &arl_empty(size_t);
-    for (arl_iter_type(&hat_slots(H)) it = arl_iter(&hat_slots(H))
-        ; it
-        ; it = arl_iter_next(&hat_slots(H), it)
-    ) {
-        //printf(
-        //    "slot: %ld, len: %ld\n",
-        //    it - arl_iter(&hat_slots(H)),
-        //    arl_len(it)
-        //);
-        arl_append(lengths, arl_len(it));
-        if (arl_err(lengths)) { perror("mem err appending"); exit(1); }
-        //for (arl_iter_type(it) itt = arl_iter(it)
-        //    ; itt
-        //    ; itt = arl_iter_next(it, itt)
-        //) {
-        //    char* k = itt->k;
-        //    size_t v = itt->v;
-        //    printf("    %s -> %ld\n", k, v);
-        //}
+    LipEntryOf(str,int)* it = buffn(LipEntryOf(str,int),iter);
+    LipEntryOf(str,int)* end = buffn(LipEntryOf(str,int),end);
+
+    for (; it != end; ++it) {
+        printf("%s -> %ld\n", it->k, it->v);
     }
 
-    str_hat_free_keys_cleanup(H);
-    Stats st;
-    stats_init(&st, arl_items(lengths), arl_len(lengths));
-    print_freqs(&st);
 
-    arl_cleanup(lengths);
-    hat_cleanup(H);
+    //str_hat_free_keys_cleanup(H);
+    //Stats st;
+    //stats_init(&st, arl_items(lengths), arl_len(lengths));
+    //print_freqs(&st);
+
+    //arl_cleanup(lengths);
+    //hat_cleanup(H);
 
     return 0;
 }

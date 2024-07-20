@@ -40,11 +40,6 @@ buffn(BT, at)(BufOf(BT)* a, size_t ix) {
     return ix < a->len ? &a->items[ix] : NULL;
 }
 
-// static inline BT*
-// BufFn(BT, back)(BufOf(BT)* a) {
-//     return buf_len(a) ? BufFn(BT, at)(a, buf_len(a) - 1) : 0x0;
-// }
-
 #ifndef TCpy
 static inline int
 buffn(BT, elem_cpy)(BT* dst, const BT* src) {
@@ -54,14 +49,6 @@ buffn(BT, elem_cpy)(BT* dst, const BT* src) {
 #define TCpy  buffn(BT, elem_cpy)
 #endif // TCpy
 
-
-//static inline int
-//BufFn(BT, append)(BufOf(BT)* a, const BT* ptr) {
-//    if (a->len >= a->capacity) {
-//        if (BufFn(BT, realloc)(a)) { /*error in realloc*/ return  1; }
-//    }
-//    return TCpy(a->items + a->len++, ptr);
-//}
 
 static inline BT* buffn(BT, iter)(BufOf(BT)*a) { return a->items; }
 static inline BT* buffn(BT, end)(BufOf(BT)*a) { return a->items + a->len; }
