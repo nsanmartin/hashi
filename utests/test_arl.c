@@ -20,9 +20,11 @@ int str_copy(str* dst, const str* src) {
 }
 
 int str_compare(str* s, str* t) { return strcmp(*s, *t); }
+void strp_free(str* p) { free(*p); }
 #define T str
 #define TCpy str_copy
 #define TCmp str_compare
+#define TClean strp_free
 #include <arl.h>
 
 typedef Foo* Fooptr;
@@ -225,20 +227,19 @@ int test_arl_find_str(void) {
     ArlOf(str)* x = &(ArlOf(str)){0};
 
     char* foo0 = strdup("foo");
-    char* foo1 = strdup("foo");
-    char* bar0 = strdup("bar");
-    char* bar1 = strdup("bar");
-    char* one = strdup("1");
-    char* empty = strdup("");
-
     int err = arlfn(str, append)(x, &foo0);
+    free(foo0);
     utest_assert(!err, clean);
 
+    char* bar0 = strdup("bar");
     err = arlfn(str, append)(x, &bar0);
+    free(bar0);
     utest_assert(!err, clean);
 
 
+    char* foo1 = strdup("foo");
     str* ptr = arlfn(str, find)(x, &foo1);
+    free(foo1);
     utest_assert(ptr, clean);
 
     str lit = "foo";
@@ -249,13 +250,19 @@ int test_arl_find_str(void) {
     ptr = arlfn(str, find)(x, &lit);
     utest_assert(!ptr, clean);
 
+    char* bar1 = strdup("bar");
     ptr = arlfn(str, find)(x, &bar1);
+    free(bar1);
     utest_assert(ptr, clean);
 
+    char* one = strdup("1");
     ptr = arlfn(str, find)(x, &one);
+    free(one);
     utest_assert(!ptr, clean);
 
+    char* empty = strdup("");
     ptr = arlfn(str, find)(x, &empty);
+    free(empty);
     utest_assert(!ptr, clean);
 
 

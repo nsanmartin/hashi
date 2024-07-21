@@ -67,9 +67,9 @@ BufFn(BT, find) (BufOf(BT)* a, BT* x) {
 
 static inline void
 buffn(BT, clean)(BufOf(BT)*a) {
-#ifdef TClean
+#ifdef BTClean
     for (BT* it = buffn(BT, iter)(a); it != buffn(BT,end)(a); ++it) {
-        TClean(it);
+        BTClean(it);
     }
 #endif
     free(a->items);

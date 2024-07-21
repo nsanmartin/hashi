@@ -18,10 +18,21 @@
 
 
 typedef struct { KT k; VT v; } LipEntryOf(KT, VT);
-
 #define EntryT LipEntryOf(KT, VT)
+#if defined(KTClean) || defined(VTClean) 
+static inline void
+lipfn(KT,VT,clean_entry)(EntryT* e) {
+#ifdef KTClean
+    KTClean(e->k);
+#endif //KTClean
+#ifdef VTClean
+    VTClean(e->v);
+#endif //VTClean
+}
+#define BTClean lipfn(KT,VT,clean_entry)
+#endif // KTClean || VTClean
+
 #define BT EntryT
-//TODO: clean elem fn
 #include <buf.h>
 
 #define BufT BufOf(EntryT)
@@ -47,8 +58,6 @@ typedef struct { KT k; VT v; } LipEntryOf(KT, VT);
 #endif // VTCpy
 
 
-//EntryT LipZeroOf(KT,VT) = (EntryT){0};
-
 typedef struct {
     unsigned zerok : 1;
     unsigned max_tries : 7;
@@ -67,19 +76,6 @@ lipfn(KT,VT,is_zero)(KT* k) { return KTCmp(k, &(KT){0}) == 0; }
 
 #ifndef KHash
 #define KHash(S) hashi_hash_bytes((char*)S, sizeof(KT))
-//static inline int
-//lipfn(KT,VT, khash)(KT* k) {
-//    unsigned long hash = 5381;
-//    int c;
-//    const char* end = (const char*)k + sizeof(KT);
-//
-//    for (const char* s = (const char*)k; s < end; ++s) {
-//        c = *s;
-//        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-//    }
-//
-//    return hash;
-//}
 #endif // KHash
 
 static inline EntryT*

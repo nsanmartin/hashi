@@ -30,6 +30,7 @@ hash_length(char** s) {
 
 }
 #define KHash hash_length
+#define KTClean free
 #include <lip.h>
 
 
@@ -224,12 +225,6 @@ int test_6(void) {
     g = lipfn(str,int,get)(x, &k);
     utest_assert(!g, clean);
 
-    BufOf(LipEntryOf(str,int))* buf = &lip_buf(x);
-    LipEntryOf(str,int)* it =  buffn(LipEntryOf(str,int), iter)(buf); 
-    LipEntryOf(str,int)* end =  buffn(LipEntryOf(str,int), end)(buf); 
-    for (; it != end; ++it) {
-        free(it->k);
-    }
     //clean and return
     clean_and_ret(status, clean, lipfn(str,int,clean)(x));
 }
