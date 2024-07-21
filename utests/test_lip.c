@@ -7,6 +7,14 @@
 
 #include <lip-str-size_t.h> // LipOf(str,int)
 
+#define KT str
+#define KTCmp strp_compare
+#define KTCpy strp_copy
+#define VT int
+#define KHash strp_hash
+#include <lip.h>
+
+
 int test_0(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};

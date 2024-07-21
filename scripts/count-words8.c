@@ -5,15 +5,7 @@
 #include <ctype.h>
 
 #include <hashi.h>
-
-typedef char* str;
-#define KT str
-#define VT size_t
-#define KCmp strcmp
-#define KCpy strcpy
-#include <lip.h>
-
-typedef LipOf(str, size_t) HashTable
+#include <lip-str-size_t.h>
 
 #include <rand-word.h>
 #include <stats.h>
@@ -26,7 +18,7 @@ int fill_2int_word(char* w) {
     return wlen;
 }
 
-int fill_table(HashTable* ht, long n_words) {
+int fill_table(LipOf(str,size_t)* ht, long n_words) {
     char w[1 + 2 * sizeof(int)];
     while (n_words --> 0) {
         fill_2int_word(w);
@@ -39,16 +31,16 @@ int fill_table(HashTable* ht, long n_words) {
 }
 
 int run(size_t initial_capacity, size_t n_words) {
-    HashTable* ht = &(HashTable){0};
-    int err = lipfn(int,int,init)(ht, initial_capacity);
+    LipOf(str,size_t)* ht = &(LipOf(str,size_t)){0};
+    int err = lipfn(str,size_t,init)(ht, initial_capacity);
     if(err) { perror("lip init"); return -1;}
 
     if (fill_table(ht, n_words)) { return -1; }
     
     typeof(lip_buf(ht))* buf = &lip_buf(ht);
 
-    LipEntryOf(str,int)* it = buffn(LipEntryOf(str,int),iter);
-    LipEntryOf(str,int)* end = buffn(LipEntryOf(str,int),end);
+    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter);
+    LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end);
 
     for (; it != end; ++it) {
         printf("%s -> %ld\n", it->k, it->v);
