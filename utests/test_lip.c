@@ -3,36 +3,9 @@
 
 #define KT int
 #define VT int
-#include <lip.h>
+#include <lip.h> // LipOf(int,int)
 
-
-typedef char* str;
-#define KT str
-static inline int
-str_compare(str* s1, str* s2) {
-    if (*s1 == *s2) { return 0; }
-    return *s1 == 0 || *s2 == 0 || strcmp(*s1, *s2);
-
-}
-#define KTCmp str_compare
-static inline int
-str_copy(char** dest, char** src) {
-    *dest = strdup(*src);
-    return *dest == NULL;
-}
-#define KTCpy str_copy
-#define VT int
-static inline int
-hash_length(char** s) {
-    char* str = *s;
-    size_t n = strlen(str);
-    return hashi_hash_bytes(str, n);
-
-}
-#define KHash hash_length
-#define KTClean free
-#include <lip.h>
-
+#include <lip-str-size_t.h> // LipOf(str,int)
 
 int test_0(void) {
     int status = 1;
