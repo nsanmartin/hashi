@@ -86,6 +86,7 @@ lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
         EntryT* e = buffn(EntryT, at)(&l->table, h);
         if (KTCmp(k, &e->k) == 0) { *found = true; return e; }
         if (KTCmp(&e->k, &(KT){0}) == 0) { *found = false; return e; }
+        h = (h + 7) % buflen(liptab(l));
     }
     return 0x0;
 }
@@ -123,7 +124,7 @@ static inline VT* lipfn(KT, VT, get)(LipOf(KT,VT)* l, KT* k) {
 }
 
 static inline VT* lipfn(KT,VT,get_or_set)(LipOf(KT,VT)* l, KT* k, VT* v) {
-    if (lipfn(KT,VT,is_zero)(k) && !l->zerok) { return 0x0; }
+    if (lipfn(KT,VT,is_zero)(k)) { l->zerok = 1; }
     bool found = 0;
     EntryT* e = lipfn(KT,VT,find)(l, k, &found);
     if (!e) { /*TODO ERROR or MAX TRIES?*/ return 0x0; }

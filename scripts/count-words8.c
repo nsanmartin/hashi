@@ -48,7 +48,9 @@ int run(size_t initial_capacity, size_t n_words) {
     LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
 
     for (; it != end; ++it) {
-        printf("%s -> %ld\n", it->k, it->v);
+        if (it->k) {
+            printf("%s -> %ld\n", it->k, it->v);
+        }
     }
 
 
