@@ -122,6 +122,24 @@ static inline VT* lipfn(KT, VT, get)(LipOf(KT,VT)* l, KT* k) {
     return &e->v;
 }
 
+static inline VT* lipfn(KT,VT,get_or_set)(LipOf(KT,VT)* l, KT* k, VT* v) {
+    if (lipfn(KT,VT,is_zero)(k) && !l->zerok) { return 0x0; }
+    bool found = 0;
+    EntryT* e = lipfn(KT,VT,find)(l, k, &found);
+    if (!e) { /*TODO ERROR or MAX TRIES?*/ return 0x0; }
+    if (!found) {
+        if (KTCpy(&e->k, k)) { return 0x0; }
+        if (VTCpy(&e->v, v)) {
+#ifdef KTClean
+            KTClean(e->k);
+#endif //KTClean
+            return 0x0;
+        }
+        ++l->inserts;
+    }
+    return &e->v;
+}
+
 
 static inline int lipfn(KT, VT, del)(LipOf(KT,VT)* l, KT* k) {
     if (lipfn(KT,VT,is_zero)(k)) {

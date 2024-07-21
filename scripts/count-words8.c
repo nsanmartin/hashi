@@ -19,13 +19,18 @@ int fill_2int_word(char* w) {
 }
 
 int fill_table(LipOf(str,size_t)* ht, long n_words) {
+    size_t zero = 0;
     char w[1 + 2 * sizeof(int)];
+    char* wp = w;
     while (n_words --> 0) {
         fill_2int_word(w);
-        
-        LipentryOf(str,size_t)* e = lipfn(str,size_t,find)(ht, w);
-        if (!e) { puts("Error aborting"); exit(1); }
-        ++e->v;
+        size_t* v = lipfn(str,size_t,get_or_set)(
+            ht,
+            &wp,
+            &zero
+        );
+        if (!v) { puts("Error aborting"); exit(1); }
+        ++*v;
     }
     return 0;
 }
@@ -39,8 +44,8 @@ int run(size_t initial_capacity, size_t n_words) {
     
     typeof(lip_buf(ht))* buf = &lip_buf(ht);
 
-    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter);
-    LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end);
+    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
+    LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
 
     for (; it != end; ++it) {
         printf("%s -> %ld\n", it->k, it->v);
