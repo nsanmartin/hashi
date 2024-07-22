@@ -211,6 +211,45 @@ int test_6(void) {
 }
 
 
+int test_7(void) {
+    int status = 1;
+    LipOf(int,int)* x = &(LipOf(int,int)){0};
+    size_t initsz = 4;
+    int err = lipfn(int,int,init)(x, initsz);
+    utest_assert(!err, clean);
+
+    int k;
+    int v=1000;
+
+    k=1;
+    err = lipfn(int,int,set)(x, &k, &v);
+    utest_assert(!err, clean);
+
+    k=2;
+    err = lipfn(int,int,set)(x, &k, &v);
+    utest_assert(!err, clean);
+
+    k=3;
+    err = lipfn(int,int,set)(x, &k, &v);
+    utest_assert(!err, clean);
+
+    k=4;
+    err = lipfn(int,int,set)(x, &k, &v);
+    utest_assert(!err, clean);
+
+    //k=5;
+    //err = lipfn(int,int,set)(x, &k, &v);
+    //utest_assert(!err, clean);
+
+    //int* g = lipfn(int,int,get)(x, &k);
+    //utest_assert(g, clean);
+    //utest_assert(*g == v, clean);
+
+
+    //clean and return
+    clean_and_ret(status, clean, lipfn(int,int,clean)(x));
+}
+
 int main(void) {
     int failures 
         = test_0()
@@ -220,6 +259,7 @@ int main(void) {
         + test_4()
         + test_5()
         + test_6()
+        + test_7()
         ;
 
 	if (failures) {

@@ -27,6 +27,7 @@ ArlFn(T, calloc)(ArlOf(T)* a, size_t len) {
 
 static inline int
 ArlFn(T, realloc)(ArlOf(T)* a) {
+    if (a->capacity * 2 < a->capacity) { /* overflow */ return -1; }
     a->capacity = a->capacity ? 2 * a->capacity : ArlDefaultInitialCapacity ;
     a->items = realloc(a->items, a->capacity * sizeof(T)); 
     return a->items == 0;

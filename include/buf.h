@@ -27,7 +27,7 @@ static inline int
 buffn(BT, realloc)(BufOf(BT)* a) {
     if (!a->items) { return -1; }
     size_t rest = a->len;
-    //TODO: check overflow
+    if (a->len + a->len < a->len) { /* overflow */ return -1; }
     a->len += a->len;
     a->items = realloc(a->items, a->len * sizeof(BT)); 
     if (a->items == 0) { return -1; };
