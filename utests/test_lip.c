@@ -237,13 +237,49 @@ int test_7(void) {
     err = lipfn(int,int,set)(x, &k, &v);
     utest_assert(!err, clean);
 
-    //k=5;
-    //err = lipfn(int,int,set)(x, &k, &v);
-    //utest_assert(!err, clean);
+    k=5;
+    err = lipfn(int,int,set)(x, &k, &v);
+    utest_assert(!err, clean);
 
-    //int* g = lipfn(int,int,get)(x, &k);
-    //utest_assert(g, clean);
-    //utest_assert(*g == v, clean);
+    k=6;
+    err = lipfn(int,int,set)(x, &k, &v);
+    utest_assert(!err, clean);
+
+    int* g;
+
+    k = 1;
+    g = lipfn(int,int,get)(x, &k);
+    utest_assert(g, clean);
+    utest_assert(*g == v, clean);
+
+    k = 2;
+    g = lipfn(int,int,get)(x, &k);
+    utest_assert(g, clean);
+    utest_assert(*g == v, clean);
+
+    k = 3;
+    g = lipfn(int,int,get)(x, &k);
+    utest_assert(g, clean);
+    utest_assert(*g == v, clean);
+
+    k = 4;
+    g = lipfn(int,int,get)(x, &k);
+    utest_assert(g, clean);
+    utest_assert(*g == v, clean);
+
+    k = 5;
+    g = lipfn(int,int,get)(x, &k);
+    utest_assert(g, clean);
+    utest_assert(*g == v, clean);
+
+    k = 6;
+    g = lipfn(int,int,get)(x, &k);
+    utest_assert(g, clean);
+    utest_assert(*g == v, clean);
+
+    k = 64;
+    g = lipfn(int,int,get)(x, &k);
+    utest_assert(!g, clean);
 
 
     //clean and return

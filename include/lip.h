@@ -114,8 +114,6 @@ lipfn(KT, VT, __dup_find)(LipOf(KT,VT)* l, KT* k) {
             EntryT* e = lipfn(KT,VT,find)(l,&it->k,&found);
             if (found) { puts("error"); return 0x0; }
             memmove(e, it, sizeof(EntryT));
-            //err = lipfn(KT,VT,set)(l, &it->k, &it->v);
-            //if (err) return 0x0;
         }
     }
 
