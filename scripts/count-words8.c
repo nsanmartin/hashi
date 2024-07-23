@@ -29,8 +29,10 @@ int fill_table(LipOf(str,size_t)* ht, long n_words) {
             &wp,
             &zero
         );
-        if (!v) { puts("Error aborting"); exit(1); }
-        ++*v;
+        if (!v) {
+            puts("Error aborting"); exit(-1);
+        }
+        *v = *v + 1;
     }
     return 0;
 }
@@ -40,18 +42,21 @@ int run(size_t initial_capacity, size_t n_words) {
     int err = lipfn(str,size_t,init)(ht, initial_capacity);
     if(err) { perror("lip init"); return -1;}
 
-    if (fill_table(ht, n_words)) { return -1; }
-    
-    typeof(lip_buf(ht))* buf = &lip_buf(ht);
-
-    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
-    LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
-
-    for (; it != end; ++it) {
-        if (it->k) {
-            printf("%s -> %ld\n", it->k, it->v);
-        }
+    if (fill_table(ht, n_words)) {
+        lipfn(str,size_t,clean)(ht);
+        return -1;
     }
+    
+    //typeof(lip_buf(ht))* buf = &lip_buf(ht);
+
+    //LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
+    //LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
+
+    //for (; it != end; ++it) {
+    //    if (it->k) {
+    //        printf("%s -> %ld\n", it->k, it->v);
+    //    }
+    //}
 
 
     //str_hat_free_keys_cleanup(H);
@@ -61,6 +66,7 @@ int run(size_t initial_capacity, size_t n_words) {
 
     //arl_cleanup(lengths);
     //hat_cleanup(H);
+    lipfn(str,size_t,clean)(ht);
 
     return 0;
 }

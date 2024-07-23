@@ -117,7 +117,8 @@ lipfn(KT, VT, __dup_find)(LipOf(KT,VT)* l, KT* k) {
         }
     }
 
-    buffn(EntryT, clean)(&t0);
+    //buffn(EntryT, clean)(&t0);
+    free(t0.items);
     bool found;
     EntryT* res = lipfn(KT,VT,find)(l,k,&found);
     if (found) { puts("error"); return 0x0; }
@@ -148,21 +149,21 @@ lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
     return 0;
 }
 
-static inline int
+static inline EntryT*
 lipfn(KT, VT, __insert)(LipOf(KT,VT)* l, EntryT* e, KT* k, VT* v) {
         if (l->inserts > buflen(liptab(l)) * 65 / 100) {
             e = lipfn(KT,VT,__dup_find)(l,k);
-            if (!e) { return -1; }
+            if (!e) { return 0x0; }
         }
-        if (KTCpy(&e->k, k)) { return -1; }
+        if (KTCpy(&e->k, k)) { return 0x0; }
         if (VTCpy(&e->v, v)) {
 #ifdef KTClean
             KTClean(e->k);
 #endif //KTClean
-            return -1;
+            return 0x0;
         }
         ++l->inserts;
-        return 0;
+        return e;
 }
 
 
@@ -178,7 +179,7 @@ lipfn(KT, VT, set)(LipOf(KT,VT)* l, KT* k, VT* v) {
     }
 
     if (!found) {
-        return lipfn(KT,VT,__insert)(l, e, k, v);
+        return lipfn(KT,VT,__insert)(l, e, k, v) == NULL;
     }
     return VTCpy(&e->v, v);
 }
@@ -190,9 +191,10 @@ static inline VT* lipfn(KT,VT,get_or_set)(LipOf(KT,VT)* l, KT* k, VT* v) {
     EntryT* e = lipfn(KT,VT,find)(l, k, &found);
     if (!e) { /*TODO ERROR or MAX TRIES?*/ return 0x0; }
     if (!found) {
-        if (lipfn(KT,VT,__insert)(l, e, k, v)) {
+        if (!(e = lipfn(KT,VT,__insert)(l, e, k, v))) {
             return 0x0;
         }
+        if (VTCpy(&e->v, v)) { return 0x0; }
     }
     return &e->v;
 }
