@@ -95,6 +95,37 @@ lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
 
 static inline int lipfn(KT, VT, set)(LipOf(KT,VT)* l, KT* k, VT* v);
 
+static inline EntryT*
+lipfn(KT, VT, __dup_find)(LipOf(KT,VT)* l, KT* k) {
+    size_t n = buflen(liptab(l));
+    int err = n + n < n;
+    if (err) { /* overflow */ return 0x0; }
+    //TODO set zero if present
+
+    BufOf(EntryT) t0 = *liptab(l);
+    *(liptab(l)) = (BufOf(EntryT)){0};
+    lipfn(KT,VT,init)(l, n + n);
+
+    EntryT* it = buffn(EntryT,iter)(&t0);
+    EntryT* end = buffn(EntryT,end)(&t0);
+    for(; it != end; ++it) {
+        if (!lipfn(KT,VT,is_zero)(&it->k)) {
+            bool found;
+            EntryT* e = lipfn(KT,VT,find)(l,&it->k,&found);
+            if (found) { puts("error"); return 0x0; }
+            memmove(e, it, sizeof(EntryT));
+            //err = lipfn(KT,VT,set)(l, &it->k, &it->v);
+            //if (err) return 0x0;
+        }
+    }
+
+    buffn(EntryT, clean)(&t0);
+    bool found;
+    EntryT* res = lipfn(KT,VT,find)(l,k,&found);
+    if (found) { puts("error"); return 0x0; }
+    return res;
+}
+
 static inline int
 lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
     size_t n = buflen(liptab(l));
@@ -122,7 +153,8 @@ lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
 static inline int
 lipfn(KT, VT, __insert)(LipOf(KT,VT)* l, EntryT* e, KT* k, VT* v) {
         if (l->inserts > buflen(liptab(l)) * 65 / 100) {
-            lipfn(KT,VT,__dup)(l);
+            e = lipfn(KT,VT,__dup_find)(l,k);
+            if (!e) { return -1; }
         }
         if (KTCpy(&e->k, k)) { return -1; }
         if (VTCpy(&e->v, v)) {
