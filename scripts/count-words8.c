@@ -30,7 +30,7 @@ int fill_table(LipOf(str,size_t)* ht, long n_words) {
             &zero
         );
         if (!v) {
-            puts("Error aborting"); exit(-1);
+            puts("Error aborting"); return -1;
         }
         *v = *v + 1;
     }
@@ -47,19 +47,18 @@ int run(size_t initial_capacity, size_t n_words) {
         return -1;
     }
     
-    //typeof(lip_buf(ht))* buf = &lip_buf(ht);
+    typeof(lip_buf(ht))* buf = &lip_buf(ht);
 
-    //LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
-    //LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
+    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
+    LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
 
-    //for (; it != end; ++it) {
-    //    if (it->k) {
-    //        printf("%s -> %ld\n", it->k, it->v);
-    //    }
-    //}
+    for (; it != end; ++it) {
+        if (it->k) {
+            printf("%s -> %ld\n", it->k, it->v);
+        }
+    }
 
 
-    //str_hat_free_keys_cleanup(H);
     //Stats st;
     //stats_init(&st, arl_items(lengths), arl_len(lengths));
     //print_freqs(&st);

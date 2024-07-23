@@ -60,7 +60,7 @@ lipfn(KT,VT,clean_entry)(EntryT* e) {
 
 typedef struct {
     unsigned zerok : 1;
-    unsigned max_tries : 7;
+    unsigned max_tries : 15;
     unsigned char load_factor;
     size_t inserts;
     BufOf(EntryT) table;
@@ -68,8 +68,8 @@ typedef struct {
 
 static inline int
 lipfn(KT,VT,init)(LipOf(KT,VT)* l, size_t len) {
-    l->max_tries = 9;
-    l->load_factor = 65;
+    l->max_tries = len > 15700 ? 15700 : len;
+    l->load_factor = 73;
     return buffn(EntryT, calloc)(liptab(l), len);
 }
 
@@ -88,8 +88,17 @@ lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
         EntryT* e = buffn(EntryT, at)(&l->table, h);
         if (KTCmp(k, &e->k) == 0) { *found = true; return e; }
         if (KTCmp(&e->k, &(KT){0}) == 0) { *found = false; return e; }
-        h = (h + 7) % buflen(liptab(l));
+        h = (h + 1) % buflen(liptab(l));
     }
+    printf(
+        "inserts: %ld, size: %ld, max tries: %d, nmovs: %d,"
+        " load_factor*len/100: %ld\n",
+        l->inserts,
+        buflen(liptab(l)),
+        l->max_tries,
+        nmovs,
+        l->load_factor* buflen(liptab(l))/100
+    ); 
     return 0x0;
 }
 
@@ -151,7 +160,7 @@ lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
 
 static inline EntryT*
 lipfn(KT, VT, __insert)(LipOf(KT,VT)* l, EntryT* e, KT* k, VT* v) {
-        if (l->inserts > buflen(liptab(l)) * 65 / 100) {
+        if (l->inserts > buflen(liptab(l)) * l->load_factor / 100) {
             e = lipfn(KT,VT,__dup_find)(l,k);
             if (!e) { return 0x0; }
         }
@@ -189,12 +198,18 @@ static inline VT* lipfn(KT,VT,get_or_set)(LipOf(KT,VT)* l, KT* k, VT* v) {
     if (lipfn(KT,VT,is_zero)(k)) { l->zerok = 1; }
     bool found = 0;
     EntryT* e = lipfn(KT,VT,find)(l, k, &found);
-    if (!e) { /*TODO ERROR or MAX TRIES?*/ return 0x0; }
+    if (!e) { /*TODO ERROR or MAX TRIES?*/
+        puts("? max tried?");
+        return 0x0; }
     if (!found) {
-        if (!(e = lipfn(KT,VT,__insert)(l, e, k, v))) {
+        if ((e = lipfn(KT,VT,__insert)(l, e, k, v)) == NULL) {
+            puts("__insert failed");
             return 0x0;
         }
-        if (VTCpy(&e->v, v)) { return 0x0; }
+        if (VTCpy(&e->v, v)) {
+            puts("VTCpy failed");
+            return 0x0;
+        }
     }
     return &e->v;
 }
