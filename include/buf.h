@@ -40,20 +40,20 @@ buffn(BT, at)(BufOf(BT)* a, size_t ix) {
     return ix < a->len ? &a->items[ix] : NULL;
 }
 
-#ifndef TCpy
+#ifndef BTCpy
 static inline int
 buffn(BT, elem_cpy)(BT* dst, const BT* src) {
     memmove(dst, src, sizeof(BT));
     return 0;
 }
-#define TCpy  buffn(BT, elem_cpy)
-#endif // TCpy
+#define BTCpy  buffn(BT, elem_cpy)
+#endif // BTCpy
 
 
 static inline BT* buffn(BT, iter)(BufOf(BT)*a) { return a->items; }
 static inline BT* buffn(BT, end)(BufOf(BT)*a) { return a->items + a->len; }
 
-#ifdef TCmp
+#ifdef BTCmp
 static inline BT*
 BufFn(BT, find) (BufOf(BT)* a, BT* x) {
     for (size_t i = 0; i < a->len; ++i) {
@@ -62,7 +62,7 @@ BufFn(BT, find) (BufOf(BT)* a, BT* x) {
     }
     return NULL;
 }
-#endif // TCmp
+#endif // BTCmp
 
 
 static inline void

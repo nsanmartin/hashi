@@ -60,15 +60,15 @@ lipfn(KT,VT,clean_entry)(EntryT* e) {
 
 typedef struct {
     unsigned zerok : 1;
-    unsigned max_tries : 15;
-    unsigned char load_factor;
+    unsigned char load_factor : 7;
+    size_t max_tries;
     size_t inserts;
     BufOf(EntryT) table;
 } LipOf(KT,VT);
 
 static inline int
 lipfn(KT,VT,init)(LipOf(KT,VT)* l, size_t len) {
-    l->max_tries = len > 15700 ? 15700 : len;
+    l->max_tries = len;
     l->load_factor = 73;
     return buffn(EntryT, calloc)(liptab(l), len);
 }
@@ -83,7 +83,7 @@ lipfn(KT,VT,is_zero)(KT* k) { return KTCmp(k, &(KT){0}) == 0; }
 static inline EntryT*
 lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
     size_t h = KHash(k) % l->table.len;
-    unsigned nmovs = 0;
+    size_t nmovs = 0;
     while (nmovs++ < l->max_tries) {
         EntryT* e = buffn(EntryT, at)(&l->table, h);
         if (KTCmp(k, &e->k) == 0) { *found = true; return e; }
@@ -91,7 +91,7 @@ lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
         h = (h + 1) % buflen(liptab(l));
     }
     printf(
-        "inserts: %ld, size: %ld, max tries: %d, nmovs: %d,"
+        "inserts: %ld, size: %ld, max tries: %ld, nmovs: %ld,"
         " load_factor*len/100: %ld\n",
         l->inserts,
         buflen(liptab(l)),

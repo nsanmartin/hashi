@@ -4,11 +4,14 @@
 #include <string.h>
 #include <ctype.h>
 
-#include <hashi.h>
+// #include <hashi.h>
 #include <lip-str-size_t.h>
 
 #include <rand-word.h>
 #include <stats.h>
+
+#define T size_t
+#include <arl.h>
 
 int fill_2int_word(char* w) {
     size_t wlen = 1 + rand() % (2 * sizeof(int) - 1);
@@ -52,19 +55,26 @@ int run(size_t initial_capacity, size_t n_words) {
     LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
     LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
 
+    ArlOf(size_t) lengths = {0};
+
     for (; it != end; ++it) {
         if (it->k) {
-            printf("%s -> %ld\n", it->k, it->v);
+            int err = arlfn(size_t,append)(&lengths, &it->v);
+            if (err) {
+                perror("mem err appending");
+                arlfn(size_t,clean)(&lengths);
+                exit(1);
+            }
+            //printf("%s -> %ld\n", it->k, it->v);
         }
     }
 
 
-    //Stats st;
-    //stats_init(&st, arl_items(lengths), arl_len(lengths));
-    //print_freqs(&st);
+    Stats st;
+    stats_init(&st, lengths.items, lengths.len);
+    print_freqs(&st);
 
-    //arl_cleanup(lengths);
-    //hat_cleanup(H);
+    arlfn(size_t,clean)(&lengths);
     lipfn(str,size_t,clean)(ht);
 
     return 0;
