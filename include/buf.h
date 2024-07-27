@@ -17,7 +17,7 @@ typedef struct {
 
 static inline int
 buffn(BT, calloc)(BufOf(BT)* a, size_t len) {
-    if (a->items) { return -1; }
+    if (!len || a->items) { return -1; }
     a->items = calloc(len, sizeof(BT)); 
     a->len = len;
     return a->items == 0;

@@ -43,7 +43,7 @@ int fill_table(LipOf(str,size_t)* ht, long n_words) {
 int run(size_t initial_capacity, size_t n_words) {
     LipOf(str,size_t)* ht = &(LipOf(str,size_t)){0};
     int err = lipfn(str,size_t,init)(ht, initial_capacity);
-    if(err) { perror("lip init"); return -1;}
+    if(err) { perror("lip init error"); return -1;}
 
     if (fill_table(ht, n_words)) {
         lipfn(str,size_t,clean)(ht);
@@ -81,13 +81,16 @@ int run(size_t initial_capacity, size_t n_words) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc == 4) {
+    if (argc == 4 || argc == 3) {
         const long N = strtol(argv[1], 0, 0);
-        const long CAPACITY = strtol(argv[2], 0, 0);
-        const long SEED = strtol(argv[3], 0, 0);
+        const long SEED = strtol(argv[2], 0, 0);
+        const long CAPACITY = argc == 3 ? 8 : strtol(argv[3], 0, 0);
         srand(SEED);
 
-        printf("N: %ld. CAPACITY: %ld, SEED: %ld\n", N, CAPACITY, SEED);
+        printf(
+            "N: %ld, SEED: %ld, [INITIAL_CAPACITY]: %ld\n",
+            N, SEED, CAPACITY
+        );
         //run(CAPACITY, N);
         run(CAPACITY, N);
     } else {
