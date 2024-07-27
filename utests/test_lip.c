@@ -211,6 +211,26 @@ int test_6(void) {
 }
 
 
+int lip_int_int_insert_many(LipOf(int,int)* l, int* ks, int* vs, size_t n) {
+    for (size_t i = 0; i < n; ++i) {
+        int k = ks[i];
+        int v = vs[i];
+        if (lipfn(int,int,set)(l, &k, &v)) { return -1; }
+    }
+    return 0;
+}
+
+
+int lip_int_int_get_many(LipOf(int,int)* l, int* ks, int* vs, size_t n) {
+    for (size_t i = 0; i < n; ++i) {
+        int k = ks[i];
+        int v = vs[i];
+        int* g = lipfn(int,int,get)(l, &k);
+        if (!g || *g != v) { return -1; }
+    }
+    return 0;
+}
+
 int test_7(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
@@ -218,67 +238,43 @@ int test_7(void) {
     int err = lipfn(int,int,init)(x, initsz);
     utest_assert(!err, clean);
 
-    int k;
-    int v=1000;
+    int ks[] = {1, 2, 3, 4, 5, 6};
+    int vs[] = {-1, -1, -1, -1, -1, -1 };
 
-    k=1;
-    err = lipfn(int,int,set)(x, &k, &v);
+    err = lip_int_int_insert_many(x, ks, vs, sizeof(ks)/sizeof(*ks));
     utest_assert(!err, clean);
 
-    k=2;
-    err = lipfn(int,int,set)(x, &k, &v);
+    err = lip_int_int_get_many(x, ks, vs, sizeof(ks)/sizeof(*ks));
     utest_assert(!err, clean);
 
-    k=3;
-    err = lipfn(int,int,set)(x, &k, &v);
+    int k = 64;
+    int* g = lipfn(int,int,get)(x, &k);
+    utest_assert(!g, clean);
+
+
+    //clean and return
+    clean_and_ret(status, clean, lipfn(int,int,clean)(x));
+}
+
+
+int test_8(void) {
+    int status = 1;
+    LipOf(int,int)* x = &(LipOf(int,int)){0};
+    size_t initsz = 4;
+    int err = lipfn(int,int,init)(x, initsz);
     utest_assert(!err, clean);
 
-    k=4;
-    err = lipfn(int,int,set)(x, &k, &v);
+    int ks[] = {0, 2, 3, 4, 5, 6};
+    int vs[] = {-1, -1, -1, -1, -1, -1 };
+
+    err = lip_int_int_insert_many(x, ks, vs, sizeof(ks)/sizeof(*ks));
     utest_assert(!err, clean);
 
-    k=5;
-    err = lipfn(int,int,set)(x, &k, &v);
+    err = lip_int_int_get_many(x, ks, vs, sizeof(ks)/sizeof(*ks));
     utest_assert(!err, clean);
 
-    k=6;
-    err = lipfn(int,int,set)(x, &k, &v);
-    utest_assert(!err, clean);
-
-    int* g;
-
-    k = 1;
-    g = lipfn(int,int,get)(x, &k);
-    utest_assert(g, clean);
-    utest_assert(*g == v, clean);
-
-    k = 2;
-    g = lipfn(int,int,get)(x, &k);
-    utest_assert(g, clean);
-    utest_assert(*g == v, clean);
-
-    k = 3;
-    g = lipfn(int,int,get)(x, &k);
-    utest_assert(g, clean);
-    utest_assert(*g == v, clean);
-
-    k = 4;
-    g = lipfn(int,int,get)(x, &k);
-    utest_assert(g, clean);
-    utest_assert(*g == v, clean);
-
-    k = 5;
-    g = lipfn(int,int,get)(x, &k);
-    utest_assert(g, clean);
-    utest_assert(*g == v, clean);
-
-    k = 6;
-    g = lipfn(int,int,get)(x, &k);
-    utest_assert(g, clean);
-    utest_assert(*g == v, clean);
-
-    k = 64;
-    g = lipfn(int,int,get)(x, &k);
+    int k = 64;
+    int* g = lipfn(int,int,get)(x, &k);
     utest_assert(!g, clean);
 
 
@@ -296,6 +292,7 @@ int main(void) {
         + test_5()
         + test_6()
         + test_7()
+        + test_8()
         ;
 
 	if (failures) {

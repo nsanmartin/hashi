@@ -57,8 +57,9 @@ lipfn(KT,VT,clean_entry)(EntryT* e) {
 #define VTCpy(Dst, Src) hashi_copy_bytes(Dst, Src, sizeof(VT))
 #endif // VTCpy
 
-
 typedef struct {
+    /* If a type's zero coincides with plain zero we nees to distinguish
+     * it from empty slot */
     unsigned zerok : 1;
     unsigned char load_factor : 7;
     size_t max_tries;
@@ -103,6 +104,7 @@ lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
 }
 
 static inline int lipfn(KT, VT, set)(LipOf(KT,VT)* l, KT* k, VT* v);
+static inline VT* lipfn(KT, VT, get)(LipOf(KT,VT)* l, KT* k);
 
 static inline EntryT*
 lipfn(KT, VT, __dup_find)(LipOf(KT,VT)* l, KT* k) {
@@ -111,9 +113,22 @@ lipfn(KT, VT, __dup_find)(LipOf(KT,VT)* l, KT* k) {
     if (err) { /* overflow */ return 0x0; }
     //TODO set zero if present
 
+    VT zero_value = (VT){0};
+    if (l->zerok) {
+        VT* z = lipfn(KT, VT, get)(l, &(KT){0});
+        if (!z) { return 0x0; }
+        zero_value = *z;
+    }
+
     BufOf(EntryT) t0 = *liptab(l);
     *(liptab(l)) = (BufOf(EntryT)){0};
     lipfn(KT,VT,init)(l, n + n);
+
+    if (l->zerok) {
+        if (lipfn(KT,VT,set)(l, &(KT){0}, &zero_value)) {
+            return 0x0;
+        }
+    }
 
     EntryT* it = buffn(EntryT,iter)(&t0);
     EntryT* end = buffn(EntryT,end)(&t0);
@@ -126,36 +141,12 @@ lipfn(KT, VT, __dup_find)(LipOf(KT,VT)* l, KT* k) {
         }
     }
 
-    //buffn(EntryT, clean)(&t0);
+    /* We 'move' the pointes/bytes, so no cleanup. */
     free(t0.items);
     bool found;
     EntryT* res = lipfn(KT,VT,find)(l,k,&found);
     if (found) { puts("error"); return 0x0; }
     return res;
-}
-
-static inline int
-lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
-    size_t n = buflen(liptab(l));
-    int err = n + n < n;
-    if (err) { /* overflow */ return -1; }
-    //TODO set zero if present
-
-    BufOf(EntryT) t0 = *liptab(l);
-    *(liptab(l)) = (BufOf(EntryT)){0};
-    lipfn(KT,VT,init)(l, n + n);
-
-    EntryT* it = buffn(EntryT,iter)(&t0);
-    EntryT* end = buffn(EntryT,end)(&t0);
-    for(; it != end; ++it) {
-        if (!lipfn(KT,VT,is_zero)(&it->k)) {
-            err = lipfn(KT,VT,set)(l, &it->k, &it->v);
-            if (err) return -1;
-        }
-    }
-
-    buffn(EntryT, clean)(&t0);
-    return 0;
 }
 
 static inline EntryT*
