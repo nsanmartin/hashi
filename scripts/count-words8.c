@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 
+// #include <hashi.h>
 #include <lip-str-size_t.h>
 
 #include <rand-word.h>
@@ -64,6 +65,7 @@ int run(size_t initial_capacity, size_t n_words) {
                 arlfn(size_t,clean)(&lengths);
                 exit(1);
             }
+            //printf("%s -> %ld\n", it->k, it->v);
         }
     }
 
@@ -89,6 +91,7 @@ int main(int argc, char* argv[]) {
             "N: %ld, SEED: %ld, [INITIAL_CAPACITY]: %ld\n",
             N, SEED, CAPACITY
         );
+        //run(CAPACITY, N);
         run(CAPACITY, N);
     } else {
         printf("usage %s N CAPACITY SEED\n", argv[0]);

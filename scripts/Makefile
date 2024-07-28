@@ -1,4 +1,5 @@
 CFLAGS:=-g  -Wall -Wextra -Werror -pedantic -Wold-style-definition 
+CXXFLAGS:=-g  -Wall -Wextra -Werror -pedantic 
 
 BUILD:=../build
 INCLUDE:=.
@@ -9,6 +10,18 @@ HASHI_INCLUDE=../include
 HASHI_HEADERS=$(wildcard $(HASHI_INCLUDE)/*.h)
 HASHI_SRCS=$(wildcard $(HASHI_SRCDIR)/*.c)
 HASHI_OBJ=$(HASHI_SRCS:src/%.c=$(HASHI_OBJDIR)/%.o)
+
+all: stdin-count stdin-count-cppmap rand-word8-count rand-words8
+
+rand-word8-count: $(HASHI_OBJ)
+	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
+
+stdin-count-cppmap: 
+	$(CXX) $(CXXFLAGS) -o $(BUILD)/$@ $@.c $^
+
+stdin-count: $(HASHI_OBJ)
+	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
+
 
 slot-sizes-words8: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) \
@@ -25,9 +38,6 @@ count-words8-arl: $(HASHI_OBJ)
 count-words8-mua: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
 
-
-read-words8: $(HASHI_OBJ)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
 
 rand-words8: 
 	$(CC) $(CFLAGS) -I$(INCLUDE) -o $(BUILD)/$@ $@.c 

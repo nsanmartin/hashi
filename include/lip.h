@@ -19,6 +19,7 @@
 
 typedef struct { KT k; VT v; } LipEntryOf(KT, VT);
 #define EntryT LipEntryOf(KT, VT)
+//TODO: make KTClean : KT* -> ()
 #if defined(KTClean) || defined(VTClean) 
 static inline void
 lipfn(KT,VT,clean_entry)(EntryT* e) {

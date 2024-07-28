@@ -54,28 +54,13 @@ int run(size_t initial_capacity, size_t n_words) {
     LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
     LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
 
-    ArlOf(size_t) lengths = {0};
-
     for (; it != end; ++it) {
-        if (it->k) {
-            int err = arlfn(size_t,append)(&lengths, &it->v);
-            if (err) {
-                perror("mem err appending");
-                arlfn(size_t,clean)(&lengths);
-                exit(1);
-            }
-        }
+        if (it->k) { printf("%s -> %ld\n", it->k, it->v); }
     }
 
-
-    Stats st;
-    stats_init(&st, lengths.items, lengths.len);
-    print_freqs(&st);
-
-    arlfn(size_t,clean)(&lengths);
     lipfn(str,size_t,clean)(ht);
-
     return 0;
+
 }
 
 int main(int argc, char* argv[]) {
