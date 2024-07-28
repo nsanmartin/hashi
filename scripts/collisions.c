@@ -5,7 +5,6 @@
 #include <ctype.h>
 
 #include <hashi.h>
-#include <hat.h>
 #include <arl.h>
 #include <stats.h>
 

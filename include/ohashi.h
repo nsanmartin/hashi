@@ -1,4 +1,3 @@
-
 #ifndef __HASHI_G_Functions_H__
 #define __HASHI_G_Functions_H__
 

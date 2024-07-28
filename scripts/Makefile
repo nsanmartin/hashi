@@ -11,7 +11,7 @@ HASHI_HEADERS=$(wildcard $(HASHI_INCLUDE)/*.h)
 HASHI_SRCS=$(wildcard $(HASHI_SRCDIR)/*.c)
 HASHI_OBJ=$(HASHI_SRCS:src/%.c=$(HASHI_OBJDIR)/%.o)
 
-all: stdin-count stdin-count-cppmap rand-word8-count rand-words8
+all: stdin-count stdin-count-cppmap rand-word8-count rand-word8s
 
 rand-word8-count: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
@@ -23,6 +23,10 @@ stdin-count: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
 
 
+rand-word8s: 
+	$(CC) $(CFLAGS) -I$(INCLUDE) -o $(BUILD)/$@ $@.c 
+
+
 slot-sizes-words8: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) \
 		-I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@-E.c $@.c $^ -lm
@@ -31,14 +35,3 @@ slot-sizes-words8: $(HASHI_OBJ)
 
 collisions: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
-
-count-words8-arl: $(HASHI_OBJ)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
-
-count-words8-mua: $(HASHI_OBJ)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
-
-
-rand-words8: 
-	$(CC) $(CFLAGS) -I$(INCLUDE) -o $(BUILD)/$@ $@.c 
-

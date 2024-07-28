@@ -1,9 +1,8 @@
-P0=$1
-P1=$2
-DATA=$3
+P0=$1 # program to compare ex. stdin-count
+P1=$2 # second program to compare ex. stdin-count-cppmap
+DATA=$3 # file with data to fill P0 and P1's stdin
 
-echo $DATA
-
+echo $DATA # print data source
 echo $P0
 time cat $DATA | $P0 | wc
 
