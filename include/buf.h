@@ -2,7 +2,7 @@
 // Buf (Buffer)
 //
 
-#include <ohashi.h>
+#include <hashi.h>
 
 #ifndef BT
 #error "Template type BT undefined"

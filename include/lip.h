@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 
-#include <ohashi.h>
+#include <hashi.h>
 
 #ifndef KT
 #error "Template type KT undefined"
@@ -79,7 +79,7 @@ static inline int
 lipfn(KT,VT,is_zero)(KT* k) { return KTCmp(k, &(KT){0}) == 0; }
 
 #ifndef KHash
-#define KHash(S) hashi_hash_bytes((char*)S, sizeof(KT))
+#define KHash(S) hashi_djb2_k33((char*)S, sizeof(KT))
 #endif // KHash
 
 static inline EntryT*

@@ -2,7 +2,7 @@
 // Arl (Array list)
 //
 
-#include <ohashi.h>
+#include <hashi.h>
 
 #ifndef T
 #error "Template type T undefined"

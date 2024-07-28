@@ -1,7 +1,7 @@
 #ifndef _LIP_STR_SIZE_T__
 #define _LIP_STR_SIZE_T__
 
-#include <ohashi.h>
+#include <hashi.h>
 typedef struct { size_t len; char* s; } string;
 
 #define KT string
@@ -30,7 +30,8 @@ static inline int stringp_copy(string* dest, string* src) {
     return 0;
 }
 static inline int stringp_hash(string* s) {
-    return hashi_hash_bytes(s->s, s->len);
+    //return hashi_hash_bytes(s->s, s->len);
+    return hashi_djb2_k33(s->s, s->len);
 }
 
 static inline void string_free(string s) {  free(s.s); }
