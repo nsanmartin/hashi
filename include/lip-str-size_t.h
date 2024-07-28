@@ -1,3 +1,8 @@
+/*
+ * The str type is the c string char* type.
+ * This name is consistent with standard lib functions
+ * such as strcmp, strcpy, strdup,...
+ */
 #ifndef _LIP_STR_SIZE_T__
 #define _LIP_STR_SIZE_T__
 
@@ -7,8 +12,10 @@ typedef char* str;
 #define KT str
 #define KTCmp strp_compare
 #define KTCpy strp_copy
-#define KHash strp_hash
 #define KTClean free
+#ifndef KHash
+#define KHash strp_hash
+#endif
 
 #define VT size_t
 

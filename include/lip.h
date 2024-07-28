@@ -14,8 +14,6 @@
 #error "Template type VT undefined"
 #endif
 
-#define lip_len(L) (L)->len
-
 
 typedef struct { KT k; VT v; } LipEntryOf(KT, VT);
 #define EntryT LipEntryOf(KT, VT)
