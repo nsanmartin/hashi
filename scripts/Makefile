@@ -13,6 +13,11 @@ HASHI_OBJ=$(HASHI_SRCS:src/%.c=$(HASHI_OBJDIR)/%.o)
 
 all: stdin-count stdin-count-cppmap rand-word8-count rand-word8s
 
+collisions: $(HASHI_OBJ)
+	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -I. \
+		-o $(BUILD)/$@ $@.c $^ -lm
+
+
 rand-word8-count: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -o $(BUILD)/$@ $@.c $^ -lm
 

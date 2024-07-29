@@ -5,105 +5,63 @@
 #include <ctype.h>
 
 #include <hashi.h>
-#include <arl.h>
 #include <stats.h>
+#include <util.h>
 
+typedef struct { size_t* s; size_t n; } Slots;
 
-#define TabLen 20
+void process_line(char* line, Slots* slots) {
+    line = skip_space(line);
 
-typedef_str_hat(size_t);
-typedef_arl(size_t);
-
-size_t hash(char* s) { return djb2_k33((unsigned char*)s) % TabLen; }
-
-int puts_each(void* e) { return printf("%lx <= %s\n", hash(e), (const char*)e); }
-
-void print_pair(unsigned char* s, size_t h) { printf("%lx: %s\n", h, s); }
-
-char next_word(char** pp, char** beg) {
-    char* p = *pp;
-    if (!*p || *p == '\n') { *pp = 0x0; return 0; }
-    while (*p && isspace(*p)) { ++p; }
-    *beg = p;
-    while (*p && !isspace(*p)) { ++p; }
-    char tmp = *p;
-    *p = '\0';
-    *pp = p;
-    return tmp;
-}
-
-void process_line(char* line, str_hat_size_t* ht) {
-    char* p = line;
-    while (*p) {
-        if (!*p || *p == '\n') { return; }
-        while (*p && isspace(*p)) { ++p; }
-        char* beg = p;
-        while (*p && !isspace(*p)) { ++p; }
-        char tmp = *p;
-        *p = '\0';
-
-        hat_elem_type(ht)*it = 0x0;
-        str_hat_at(ht, beg, &it);
-        if (it) {
-            ++it->v;
-        } else {
-            char* dw = strdup(beg);
-            if (!dw) { perror("mem error, exiting"); exit(1); }
-            str_hat_update(ht, dw, 1);
+    while (*line) {
+        char* wend = next_space(line);
+        if (wend > line) {
+            size_t h = hashi_djb2_k33(line, wend-line) % slots->n;
+            ++slots->s[h];
         }
-
-        *p = tmp;
+        line = skip_space(wend);
     }
 }
 
 
-int run(str_hat_size_t* ht) {
-    ssize_t nread;
-    size_t len = 0;
-    char* line = NULL;
-    while (-1 != (nread = getline(&line, &len, stdin))) {
-        process_line(line, ht);
+int fill_table(Slots* slots) {
+    char* line = 0x0;
+    size_t n = 0;
+    ssize_t nread = 0;
+    while ((nread = getline(&line, &n, stdin)) != -1) {
+        if (!line) { puts("Error aborting"); free(line); return -1; }
+        process_line(line, slots);
     }
+    free(line);
+    return 0;
+}
 
-    arl_size_t* lengths = &arl_empty(size_t);
-    for (arl_iter_type(&hat_slots(ht)) it = arl_iter(&hat_slots(ht))
-        ; it
-        ; it = arl_iter_next(&hat_slots(ht), it)
-    ) {
-        //printf(
-        //    "slot: %ld, len: %ld\n",
-        //    it - arl_iter(&hat_slots(ht)),
-        //    arl_len(it)
-        //);
-        arl_append(lengths, arl_len(it));
-        if (arl_err(lengths)) { perror("mem err appending"); exit(1); }
-        //for (arl_iter_type(it) itt = arl_iter(it)
-        //    ; itt
-        //    ; itt = arl_iter_next(it, itt)
-        //) {
-        //    char* k = itt->k;
-        //    size_t v = itt->v;
-        //    printf("    %s -> %ld\n", k, v);
-        //}
-    }
+int size_t_cmp(const void* x, const void* y) {
+    return *(size_t*)x - *(size_t*)y;
+}
 
-    str_hat_free_keys_cleanup(ht);
+int run(const long nslots) {
+    Slots slots = {.s=malloc(sizeof(size_t)*nslots),.n=nslots};
+    if (!slots.s) { return -1; }
+    memset(slots.s, 0, slots.n);
+
+    int err = fill_table(&slots);
+    
+    qsort(slots.s, slots.n, sizeof(*slots.s), size_t_cmp);
+
     Stats st;
-    stats_init(&st, arl_items(lengths), arl_len(lengths));
+    stats_init(&st, slots.s, slots.n);
     print_freqs(&st);
 
-    arl_cleanup(lengths);
-    return 0;
+    free(slots.s);
+    return err;
 }
 
 int main(int argc, char* argv[]) {
     if (argc == 2) {
-        const long initial_capacity = strtol(argv[1], 0, 0);
-        str_hat_size_t* H = &str_hat_empty(size_t);
-        hat_init(H, initial_capacity);
-        if(hat_err(H)) { perror("hat init"); return 1;}
-        run(H);
+        const long nslots = strtol(argv[1], 0, 0);
+        run(nslots);
     } else {
-        printf("usage %s CAPACITY\n", argv[0]);
+        printf("usage %s NSLOTS\n", argv[0]);
     }
 }

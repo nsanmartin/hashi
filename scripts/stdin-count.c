@@ -5,6 +5,7 @@
 #include <ctype.h>
 
 #include <lip-string-size_t.h>
+#include <util.h>
 
 int entry_compare(const void* a, const void* b) {
     const string* sa = a;
@@ -14,16 +15,6 @@ int entry_compare(const void* a, const void* b) {
     int r = memcmp(sa->s, sb->s, len);
     if (r) { return r; }
     return sa->len - sb->len;
-}
-
-char* skip_space(char* l) {
-    while (*l && isspace(*l)) { ++l; }
-    return l;
-}
-
-char* next_space(char* l) {
-    while (*l && !isspace(*l)) { ++l; }
-    return l;
 }
 
 int process_line(LipOf(string,size_t)* lip, char* line) {

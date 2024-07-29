@@ -36,19 +36,6 @@ hashi_copy_bytes(void* dest, const void* src, size_t n) {
 }
 
 static inline size_t
-hashi_hash_bytes(char* s, size_t n) {
-    size_t hash = 5381;
-    const char* end = s + n;
-
-    for (; s < end; ++s) {
-        hash = ((hash << 5) + hash) + *s; /* hash * 33 + c */
-    }
-
-    return hash;
-}
-
-
-static inline size_t
 hashi_djb2_k33_with_seed(char* s, size_t n, size_t seed) {
     unsigned long hash = seed; //5381;
 
