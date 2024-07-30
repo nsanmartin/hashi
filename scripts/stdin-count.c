@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    long CAPACITY = 16;
+    long CAPACITY = 200;
     if (argc == 2) { CAPACITY = strtol(argv[1], 0, 0); } 
     run(CAPACITY, false);
 }

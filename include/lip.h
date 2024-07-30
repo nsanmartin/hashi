@@ -68,7 +68,8 @@ typedef struct {
 
 static inline int
 lipfn(KT,VT,init)(LipOf(KT,VT)* l, size_t len) {
-    l->max_tries = len < 181 ? len : 181;
+    const size_t mtries = 89;
+    l->max_tries = len < mtries ? len : mtries;
     l->load_factor = 73;
     l->inserts = 0;
     l->zero = NULL;
@@ -106,10 +107,10 @@ lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
     }
     *found = false;
     printf(
-        "inserts: %ld, size: %ld, max tries: %ld, nmovs: %ld,"
+        "size: %ld,    \tinserts: %ld, max tries: %ld, nmovs: %ld,"
         " load_factor*len/100: %ld\n",
-        l->inserts,
         buflen(liptab(l)),
+        l->inserts,
         l->max_tries,
         nmovs,
         l->load_factor* buflen(liptab(l))/100
