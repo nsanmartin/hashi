@@ -25,7 +25,7 @@ enum { ArlDefaultInitialCapacity = 2 };
 #define LipZeroOf(KT, VT) CAT_IND(LipOf(KT, VT), zero)
 #define lip_buf(L) (L)->table
 
-enum { LipMaximumAttempts = 256 };
+enum { LipMaximumAttempts = 256, LipDefaultSize = 1024 };
 
 typedef struct { size_t sz; size_t attempts; } LipInitArgs;
 static inline int

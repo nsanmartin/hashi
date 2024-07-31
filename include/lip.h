@@ -67,8 +67,9 @@ typedef struct {
 
 static inline int
 lipfn(KT,VT,init)(LipOf(KT,VT)* l, LipInitArgs p) {
+    if (p.sz == 0) { return 0; }
     p.attempts = p.attempts ? p.attempts : LipMaximumAttempts;
-    p.sz = p.sz ? p.sz : 1024;
+    p.sz = p.sz ? p.sz : LipDefaultSize;
     l->attempts = p.sz < p.attempts ? p.sz : p.attempts;
     l->inserts = 0;
     l->zero = NULL;
@@ -105,13 +106,13 @@ lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
         h = (h + 1) % buflen(liptab(l));
     }
     *found = false;
-    printf(
-        "size: %ld,    \tinserts: %ld, max tries: %ld, nmovs: %ld\n",
-        buflen(liptab(l)),
-        l->inserts,
-        l->attempts,
-        nmovs
-    ); 
+    //printf(
+    //    "size: %ld,    \tinserts: %ld, max tries: %ld, nmovs: %ld\n",
+    //    buflen(liptab(l)),
+    //    l->inserts,
+    //    l->attempts,
+    //    nmovs
+    //); 
     return 0x0;
 }
 
@@ -156,7 +157,7 @@ lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
         }
     }
 
-    /* We 'move' the pointes/bytes, so no cleanup. */
+    /* We 'move' the pointers/bytes, so no cleanup. */
     free(t0.items);
     return 0;
 }
@@ -178,7 +179,6 @@ lipfn(KT, VT, set)(LipOf(KT,VT)* l, KT* k, VT* v) {
     }
 
     if (!found) {
-        //return lipfn(KT,VT,__insert)(l, e, k, v) == NULL;
         ++l->inserts;
         if (KTCpy(&e->k, k)) {
             puts("KTCpy failed");
@@ -211,10 +211,6 @@ static inline VT* lipfn(KT,VT,get_or_set)(LipOf(KT,VT)* l, KT* k, VT* v) {
     }
     if (lipfn(KT,VT,is_zero)(k)) { l->zero = e; }
     if (!found) {
-        //if ((e = lipfn(KT,VT,__insert)(l, e, k, v)) == NULL) {
-        //    puts("__insert failed");
-        //    return 0x0;
-        //}
         ++l->inserts;
         if (KTCpy(&e->k, k)) {
             puts("KTCpy failed");
