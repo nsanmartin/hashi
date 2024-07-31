@@ -9,7 +9,7 @@ int test_0(void) {
     BufOf(int)* x = &(BufOf(int)){0};
     size_t initsz = 4;
     buffn(int, calloc)(x, initsz);
-    int* it = buffn(int, iter)(x);
+    int* it = buffn(int, begin)(x);
     int* end = buffn(int, end)(x);
 
     for (; it != end; ++it) {

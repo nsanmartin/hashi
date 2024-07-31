@@ -41,7 +41,7 @@ int fill_table(LipOf(str,size_t)* ht, long n_words) {
 
 int run(size_t initial_capacity, size_t n_words) {
     LipOf(str,size_t)* ht = &(LipOf(str,size_t)){0};
-    int err = lipfn(str,size_t,init)(ht, initial_capacity);
+    int err = lipfn(str,size_t,init)(ht, (LipInitArgs){.sz=initial_capacity});
     if(err) { perror("lip init error"); return -1;}
 
     if (fill_table(ht, n_words)) {
@@ -51,7 +51,7 @@ int run(size_t initial_capacity, size_t n_words) {
     
     typeof(lip_buf(ht))* buf = &lip_buf(ht);
 
-    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
+    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),begin)(buf);
     LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
 
     for (; it != end; ++it) {

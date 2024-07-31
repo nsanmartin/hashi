@@ -61,7 +61,7 @@ ArlFn(T, append)(ArlOf(T)* a, const T* ptr) {
     return TCpy(a->items + a->len++, ptr);
 }
 
-static inline T* arlfn(T, iter)(ArlOf(T)*a) { return a->items; }
+static inline T* arlfn(T, begin)(ArlOf(T)*a) { return a->items; }
 static inline T* arlfn(T, end)(ArlOf(T)*a) { return a->items + a->len; }
 
 #ifdef TCmp
@@ -79,7 +79,7 @@ ArlFn(T, find) (ArlOf(T)* a, T* x) {
 static inline void
 arlfn(T, clean)(ArlOf(T)*a) {
 #ifdef TClean
-    for (T* it = arlfn(T, iter)(a); it != arlfn(T,end)(a); ++it) {
+    for (T* it = arlfn(T, begin)(a); it != arlfn(T,end)(a); ++it) {
         TClean(it);
     }
 #endif

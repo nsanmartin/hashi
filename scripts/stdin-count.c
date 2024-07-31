@@ -67,7 +67,7 @@ int run(size_t initial_capacity, bool sort) {
         qsort(buf->items, buf->len, sizeof(*buf->items), entry_compare);
     }
 
-    LipEntryOf(string,size_t)* it = buffn(LipEntryOf(string,size_t),iter)(buf);
+    LipEntryOf(string,size_t)* it = buffn(LipEntryOf(string,size_t),begin)(buf);
     LipEntryOf(string,size_t)* end = buffn(LipEntryOf(string,size_t),end)(buf);
 
     for (; it != end; ++it) {

@@ -50,7 +50,7 @@ buffn(BT, elem_cpy)(BT* dst, const BT* src) {
 #endif // BTCpy
 
 
-static inline BT* buffn(BT, iter)(BufOf(BT)*a) { return a->items; }
+static inline BT* buffn(BT, begin)(BufOf(BT)*a) { return a->items; }
 static inline BT* buffn(BT, end)(BufOf(BT)*a) { return a->items + a->len; }
 
 #ifdef BTCmp
@@ -68,7 +68,7 @@ BufFn(BT, find) (BufOf(BT)* a, BT* x) {
 static inline void
 buffn(BT, clean)(BufOf(BT)*a) {
 #ifdef BTClean
-    for (BT* it = buffn(BT, iter)(a); it != buffn(BT,end)(a); ++it) {
+    for (BT* it = buffn(BT, begin)(a); it != buffn(BT,end)(a); ++it) {
         BTClean(it);
     }
 #endif

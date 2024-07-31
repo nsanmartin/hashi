@@ -85,14 +85,14 @@ lipfn(KT,VT,is_zero)(KT* k) { return KTCmp(k, &(KT){0}) == 0; }
 
 /*
  * return value:
- * + if value is encountered found is set to true and a ptr returned
- * + if value is not encountered, found is set to false and a ptr to
+ * + if value is found, `found` is set to true and a ptr returned
+ * + if value is not found, `found` is set to false and a ptr to
  *   the entry were it should be returned.
  * + if nmovs >= attempts, found is set to false en NULL is returned
  * + if an unexpected error in at, found is set to true and NULL returned.
  */
 static inline EntryT*
-lipfn(KT, VT, find)(LipOf(KT,VT)* l, KT* k, bool* found) {
+lipfn(KT, VT, __find)(LipOf(KT,VT)* l, KT* k, bool* found) {
     size_t h = KHash(k) % l->table.len;
     size_t nmovs = 0;
     while (nmovs++ < l->attempts) {
@@ -146,12 +146,12 @@ lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
         }
     }
 
-    EntryT* it = buffn(EntryT,iter)(&t0);
+    EntryT* it = buffn(EntryT,begin)(&t0);
     EntryT* end = buffn(EntryT,end)(&t0);
     for(; it != end; ++it) {
         if (!lipfn(KT,VT,is_zero)(&it->k)) {
             bool found;
-            EntryT* e = lipfn(KT,VT,find)(l,&it->k,&found);
+            EntryT* e = lipfn(KT,VT,__find)(l,&it->k,&found);
             if (found) { puts("error"); return -1; }
             memmove(e, it, sizeof(EntryT));
         }
@@ -166,10 +166,10 @@ lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
 static inline int
 lipfn(KT, VT, set)(LipOf(KT,VT)* l, KT* k, VT* v) {
     bool found = 0;
-    EntryT* e = lipfn(KT,VT,find)(l, k, &found);
+    EntryT* e = lipfn(KT,VT,__find)(l, k, &found);
     while (!e && !found) {
         if (lipfn(KT,VT,__dup)(l)) { return -1; }
-        e = lipfn(KT,VT,find)(l, k, &found);
+        e = lipfn(KT,VT,__find)(l, k, &found);
     }
     if (!e) { return -1; }
 
@@ -200,10 +200,10 @@ static inline VT* lipfn(KT,VT,get_or_set)(LipOf(KT,VT)* l, KT* k, VT* v) {
         return &l->zero->v;
     }
     bool found = 0;
-    EntryT* e = lipfn(KT,VT,find)(l, k, &found);
+    EntryT* e = lipfn(KT,VT,__find)(l, k, &found);
     while (!e && !found) {
         if (lipfn(KT,VT,__dup)(l)) { return 0x0; }
-        e = lipfn(KT,VT,find)(l, k, &found);
+        e = lipfn(KT,VT,__find)(l, k, &found);
     }
     if (!e) { /*TODO ERROR or MAX TRIES?*/
         puts("Unxpected error.");
@@ -231,7 +231,7 @@ static inline VT* lipfn(KT, VT, get)(LipOf(KT,VT)* l, KT* k) {
         return &l->zero->v;
     }
     bool found = 0;
-    EntryT* e = lipfn(KT,VT,find)(l, k, &found);
+    EntryT* e = lipfn(KT,VT,__find)(l, k, &found);
     if (!e) { /*TODO ERROR or MAX TRIES?*/ return 0x0; }
     if (!found) {
         return 0x0;
@@ -249,7 +249,7 @@ static inline int lipfn(KT, VT, del)(LipOf(KT,VT)* l, KT* k) {
     }
 
     bool found = 0;
-    EntryT* e = lipfn(KT,VT,find)(l, k, &found);
+    EntryT* e = lipfn(KT,VT,__find)(l, k, &found);
     if (!e || !found) { return -1; }
     --l->inserts;
     return KTCpy(&e->k, &(KT){0});

@@ -51,7 +51,7 @@ int run(size_t initial_capacity, size_t n_words) {
     
     typeof(lip_buf(ht))* buf = &lip_buf(ht);
 
-    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),iter)(buf);
+    LipEntryOf(str,size_t)* it = buffn(LipEntryOf(str,size_t),begin)(buf);
     LipEntryOf(str,size_t)* end = buffn(LipEntryOf(str,size_t),end)(buf);
 
     ArlOf(size_t) lengths = {0};

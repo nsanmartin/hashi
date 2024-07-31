@@ -200,8 +200,7 @@ int test_arl_it(void) {
         utest_assert(!err, clean);
     }
 
-    int* it = arlfn(int, iter)(x);
-    utest_assert(it, clean);
+    int* it = arlfn(int, begin)(x); utest_assert(it, clean);
     utest_assert(*it == min, clean);
 
     for (int i = min; i < max+1; ++i, ++it) {
@@ -212,7 +211,7 @@ int test_arl_it(void) {
 
     int i = min;
     int* end = arlfn(int, end)(x);
-    for(it = arlfn(int, iter(x)) ; it != end; ++i, ++it) {
+    for(it = arlfn(int, begin(x)) ; it != end; ++i, ++it) {
         utest_assert(*it == i, clean);
     }
 
