@@ -54,7 +54,9 @@ int fill_table(LipOf(string,size_t)* lip) {
 
 int run(size_t initial_capacity, bool sort) {
     LipOf(string,size_t)* ht = &(LipOf(string,size_t)){0};
-    int err = lipfn(string,size_t,init)(ht, initial_capacity);
+    int err = lipfn(string,size_t,init)(
+        ht, (LipInitArgs){.sz=initial_capacity,.attempts=256}
+    );
     if(err) { perror("lip init error"); return -1;}
 
     err = fill_table(ht);

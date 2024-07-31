@@ -25,6 +25,9 @@ enum { ArlDefaultInitialCapacity = 2 };
 #define LipZeroOf(KT, VT) CAT_IND(LipOf(KT, VT), zero)
 #define lip_buf(L) (L)->table
 
+enum { LipMaximumAttempts = 256 };
+
+typedef struct { size_t sz; size_t attempts; } LipInitArgs;
 static inline int
 hashi_compare_bytes(const void* s1, const void* s2, size_t n) {
     return memcmp(s1, s2, n);

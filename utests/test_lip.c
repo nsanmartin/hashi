@@ -20,7 +20,7 @@ int test_0(void) {
     LipOf(int,int)* x = &(LipOf(int,int)){0};
 
     size_t initsz = 4;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
     utest_assert(lipsz(x) == initsz, clean);
     clean_and_ret(status, clean, lipfn(int,int,clean)(x));
@@ -31,7 +31,7 @@ int test_1(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
     size_t initsz = 4;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     int k = 1;
@@ -56,7 +56,7 @@ int test_2(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
     size_t initsz = 1000;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     for (int i = -10; i < 10; ++i) {
@@ -80,7 +80,7 @@ int test_3(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
     size_t initsz = 10;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     int k = 0;
@@ -100,7 +100,7 @@ int test_4(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
     size_t initsz = 10;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     //set 1 <- 10
@@ -136,7 +136,7 @@ int test_5(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
     size_t initsz = 10;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     //set 0 <- 10
@@ -172,7 +172,7 @@ int test_6(void) {
     int status = 1;
     LipOf(str,int)* x = &(LipOf(str,int)){0};
     size_t initsz = 10;
-    int err = lipfn(str,int,init)(x, initsz);
+    int err = lipfn(str,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     //set "Foo" <- 11
@@ -233,7 +233,7 @@ int test_7(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
     size_t initsz = 4;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     int ks[] = {1, 2, 3, 4, 5, 6};
@@ -259,7 +259,7 @@ int test_8(void) {
     int status = 1;
     LipOf(int,int)* x = &(LipOf(int,int)){0};
     size_t initsz = 4;
-    int err = lipfn(int,int,init)(x, initsz);
+    int err = lipfn(int,int,init)(x, (LipInitArgs){.sz=initsz});
     utest_assert(!err, clean);
 
     int ks[] = {0, 2, 3, 4, 5, 6};
