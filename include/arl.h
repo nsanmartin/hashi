@@ -1,6 +1,26 @@
-//
-// Arl (Array list)
-//
+/*
+ * Arl (Array list)
+ *
+ * Arl: T, TCmp, TCpy, TClean -> ArlOf(T)
+ * ---
+ *  + T: element type
+ *  + TCmp: element ptr comparator. Default: hashi_compare_bytes 
+ *    (memcmp sizeof T)
+ *  + TCpy: element ptr copy. Default: hashi_copy_bytes (memmove sizeof T).
+ *  + TClean: element ptr clean. Default: (void).
+ *
+ * Methods:
+ * -------
+ *
+ * append: ArlOf(T)*, T* -> int
+ * at:     ArlOf(T)*, size_t -> T*
+ * back:   ArlOf(T)* -> T*
+ * begin:  ArlOf(T)* -> T
+ * clean:  ArlOf(T)* -> void
+ * end:    ArlOf(T)* -> T
+ * find:   ArlOf(T)*, T* -> T*
+ *
+ */
 
 #include <hashi.h>
 
@@ -18,15 +38,7 @@ typedef struct {
 
 
 static inline int
-ArlFn(T, calloc)(ArlOf(T)* a, size_t len) {
-    if (a->items) { return -1; }
-    a->items = calloc(len, sizeof(T)); 
-    a->len = len;
-    return a->items == 0;
-}
-
-static inline int
-ArlFn(T, realloc)(ArlOf(T)* a) {
+ArlFn(T, __realloc)(ArlOf(T)* a) {
     if (a->capacity * 2 < a->capacity) { /* overflow */ return -1; }
     a->capacity = a->capacity ? 2 * a->capacity : ArlDefaultInitialCapacity ;
     a->items = realloc(a->items, a->capacity * sizeof(T)); 
@@ -56,7 +68,7 @@ ArlFn(T, back)(ArlOf(T)* a) {
 static inline int
 ArlFn(T, append)(ArlOf(T)* a, const T* ptr) {
     if (a->len >= a->capacity) {
-        if (ArlFn(T, realloc)(a)) { /*error in realloc*/ return  1; }
+        if (ArlFn(T, __realloc)(a)) { /*error in realloc*/ return  -1; }
     }
     return TCpy(a->items + a->len++, ptr);
 }

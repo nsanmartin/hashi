@@ -1,6 +1,21 @@
-//
-// Lip (Linear probing hash map)
-//
+/*
+ * Lip (Linear probing hash map)
+ *
+ * Lip: KT, VT, KHash, KTCmp, KTCpy -> LipOf(KT,VT)
+ * ---
+ *
+ * Methdods:
+ * --------
+ *
+ *  + clean:      LipOf(KV,TV)* -> int 
+ *  + del:        LipOf(KV,TV)*, KT* -> int 
+ *  + get:        LipOf(KV,TV)*, KT* -> VT*
+ *  + get_or_set: LipOf(KV,TV)*, KT*, VT* -> VT*
+ *  + init:       LipOf(KV,TV)*, LipInitArgs -> int
+ *  + set:        LipOf(KV,TV)*, KT*, VT* -> int
+ *
+ * */
+
 
 #include <stdbool.h>
 
@@ -22,10 +37,10 @@ typedef struct { KT k; VT v; } LipEntryOf(KT, VT);
 static inline void
 lipfn(KT,VT,clean_entry)(EntryT* e) {
 #ifdef KTClean
-    KTClean(e->k);
+    KTClean(&e->k);
 #endif //KTClean
 #ifdef VTClean
-    VTClean(e->v);
+    VTClean(&e->v);
 #endif //VTClean
 }
 #define BTClean lipfn(KT,VT,clean_entry)

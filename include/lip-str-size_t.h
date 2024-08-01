@@ -12,7 +12,7 @@ typedef char* str;
 #define KT str
 #define KTCmp strp_compare
 #define KTCpy strp_copy
-#define KTClean free
+#define KTClean(Ptr) do{ if(Ptr) free(*Ptr);}while(0)
 #ifndef KHash
 #define KHash strp_hash
 #endif

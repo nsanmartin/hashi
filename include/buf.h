@@ -1,6 +1,28 @@
-//
-// Buf (Buffer)
-//
+/*
+ * Buf (Buffer)
+ *
+ * Buf: BT, BTCmp, BTCpy, BTClean -> ArlOf(BT)
+ * ---
+ *  + BT: element type
+ *  + BTCmp: element ptr comparator. Default: hashi_compare_bytes
+ *    (memcmp sizeof T)
+ *  + BTCpy: element ptr copy. Default: hashi_copy_bytes
+ *           (memmove sizeof BT).
+ *  + BTClean: element ptr clean. Default: (void).
+ *
+ * Methods:
+ * -------
+ *
+ * append:  BufOf(T)*, T* -> int
+ * at:      BufOf(T)*, size_t -> T*
+ * begin:   BufOf(T)* -> T
+ * calloc:  BufOf(T)* -> int
+ * clean:   BufOf(T)* -> void
+ * end:     BufOf(T)* -> T
+ * find:    BufOf(T)*, T* -> T*
+ * realloc: BufOf(T)* -> int
+ *
+ */
 
 #include <hashi.h>
 
@@ -40,13 +62,13 @@ buffn(BT, at)(BufOf(BT)* a, size_t ix) {
     return ix < a->len ? &a->items[ix] : NULL;
 }
 
+#ifndef BTCmp
+#define BTCmp(S1, S2) hashi_compare_bytes(S1, S2, sizeof(BT))
+#endif // BTCmp
+
+
 #ifndef BTCpy
-static inline int
-buffn(BT, elem_cpy)(BT* dst, const BT* src) {
-    memmove(dst, src, sizeof(BT));
-    return 0;
-}
-#define BTCpy  buffn(BT, elem_cpy)
+#define BTCpy(Dst, Src) hashi_copy_bytes(Dst, Src, sizeof(BT))
 #endif // BTCpy
 
 
@@ -55,10 +77,10 @@ static inline BT* buffn(BT, end)(BufOf(BT)*a) { return a->items + a->len; }
 
 #ifdef BTCmp
 static inline BT*
-BufFn(BT, find) (BufOf(BT)* a, BT* x) {
+buffn(BT, find) (BufOf(BT)* a, BT* x) {
     for (size_t i = 0; i < a->len; ++i) {
         BT* addr = &a->items[i];
-        if (TCmp(addr, x) == 0) { return addr; }
+        if (BTCmp(addr, x) == 0) { return addr; }
     }
     return NULL;
 }

@@ -38,7 +38,7 @@ static inline int stringp_hash(string* s) {
     return hashi_djb2_k33(s->s, s->len);
 }
 
-static inline void string_free(string s) {  free(s.s); }
+static inline void string_free(string* s) {  if(s) free(s->s); }
 #include <lip.h>
 
 #endif // _LIP_STRING_SIZE_T__

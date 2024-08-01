@@ -20,11 +20,6 @@ all: \
 	stdin-count-cppmap \
 
 
-collisions: $(HASHI_OBJ)
-	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) -I. \
-		-o $(BUILD)/$@ $@.c $^ -lm
-
-
 rand-word8-count: $(HASHI_OBJ)
 	$(CC) $(CFLAGS) -I$(INCLUDE) -I$(HASHI_INCLUDE) \
 		-o $(BUILD)/$@ $@.c $^ -lm
