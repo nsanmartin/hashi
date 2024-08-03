@@ -13,7 +13,6 @@
  * Methods:
  * -------
  *
- * append:  BufOf(T)*, T* -> int
  * at:      BufOf(T)*, size_t -> T*
  * begin:   BufOf(T)* -> T
  * calloc:  BufOf(T)* -> int

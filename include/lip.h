@@ -4,7 +4,7 @@
  * Lip: KT, VT, KHash, KTCmp, KTCpy -> LipOf(KT,VT)
  * ---
  *
- * Methdods:
+ * Methods:
  * --------
  *
  *  + clean:      LipOf(KV,TV)* -> int 
