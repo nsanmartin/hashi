@@ -1,6 +1,7 @@
 /*
  * The string type is the pair size_t (len) char* (c string)
  */
+
 #ifndef _LIP_STRING_SIZE_T__
 #define _LIP_STRING_SIZE_T__
 
@@ -19,11 +20,14 @@ typedef struct { size_t len; char* s; } string;
 
 static inline int stringp_compare(string* s1, string* s2) {
     if (s1->s == s2->s) { return 0; }
-    if (s1->s == 0 || s2->s == 0 || s1->len != s2->len ) { return -1; }
-    for (size_t i = 0; i < s1->len; ++i) {
-        if (s1->s[i] != s2->s[i]) { return -1; }
+    int null = -(s1->s == 0) | (s2->s == 0);
+    if (null) return null;
+
+    size_t len = s1->len <= s2->len ? s1->len : s2->len;
+    for (size_t i = 0; i < len; ++i) {
+        if (s1->s[i] != s2->s[i]) { return s1->s[i] - s2->s[i]; }
     }
-    return 0;
+    return s1->len - s2->len;
 }
 
 static inline int stringp_copy(string* dest, string* src) {

@@ -1,8 +1,11 @@
 /*
  * The str type is the c string char* type.
+ *
  * This name is consistent with standard lib functions
- * such as strcmp, strcpy, strdup,...
+ * such as strcmp, strcpy, strdup, ...
+ *
  */
+
 #ifndef _LIP_STR_SIZE_T__
 #define _LIP_STR_SIZE_T__
 
@@ -21,7 +24,9 @@ typedef char* str;
 
 static inline int strp_compare(str* s1, str* s2) {
     if (*s1 == *s2) { return 0; }
-    return *s1 == 0 || *s2 == 0 || strcmp(*s1, *s2);
+    int null = (-(*s1 == 0) | (*s2 == 0));
+    if (null) return null;
+    return strcmp(*s1, *s2);
 }
 
 static inline int strp_copy(char** dest, char** src) {
