@@ -44,17 +44,25 @@ buffn(BT, calloc)(BufOf(BT)* a, size_t len) {
     return a->items == 0;
 }
 
-static inline int
-buffn(BT, realloc)(BufOf(BT)* a) {
-    if (!a->items) { return -1; }
-    size_t rest = a->len;
-    if (a->len + a->len < a->len) { /* overflow */ return -1; }
-    a->len += a->len;
-    a->items = realloc(a->items, a->len * sizeof(BT)); 
-    if (a->items == 0) { return -1; };
-    memset(a->items + rest, 0, rest);
-    return 0;
+static inline BT*
+buffn(BT, realloc)(BufOf(BT)* b, size_t len) {
+    size_t rest = b->len;
+    if (b->len + len < b->len) { /* overflow */ return NULL; }
+    b->len += len;
+    b->items = realloc(b->items, b->len * sizeof(BT)); 
+    if (b->items == 0) { return NULL; };
+    return b->items + rest;
 } 
+
+
+static inline int
+buffn(BT, append)(BufOf(BT)* b, BT* data, size_t len) {
+    if (!data || !len) { return -1; }
+    BT* rest = buffn(BT, realloc)(b, len);
+    if (!rest) { return -1; }
+    memcpy(rest, data, len);
+    return 0;
+}
 
 static inline BT*
 buffn(BT, at)(BufOf(BT)* a, size_t ix) {

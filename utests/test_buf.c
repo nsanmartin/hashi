@@ -18,7 +18,7 @@ int test_0(void) {
     }
 
     utest_assert(buflen(x) == initsz, clean);
-    buffn(int, realloc)(x);
+    buffn(int, realloc)(x, x->len);
     for (; it != end; ++it) {
         utest_assert(it, clean);
         utest_assert(*it == 0, clean);
