@@ -13,13 +13,14 @@
  * Methods:
  * -------
  *
- * at:      BufOf(T)*, size_t -> T*
- * begin:   BufOf(T)* -> T
- * calloc:  BufOf(T)* -> int
- * clean:   BufOf(T)* -> void
- * end:     BufOf(T)* -> T
- * find:    BufOf(T)*, T* -> T*
- * realloc: BufOf(T)* -> int
+ * append:  BufOf(T)*, T*, size_t  ->  T*
+ * at:      BufOf(T)*, size_t  ->  T*
+ * begin:   BufOf(T)*  ->  T
+ * calloc:  BufOf(T)*  ->  T*
+ * clean:   BufOf(T)*  ->  void
+ * end:     BufOf(T)*  ->  T
+ * find:    BufOf(T)*, T*  ->  T*
+ * realloc: BufOf(T)*  ->  int
  *
  */
 
@@ -36,12 +37,12 @@ typedef struct {
 } BufOf(BT);
 
 
-static inline int
+static inline BT*
 buffn(BT, calloc)(BufOf(BT)* a, size_t len) {
-    if (!len || a->items) { return -1; }
+    if (!len || a->items) { return NULL; }
     a->items = calloc(len, sizeof(BT)); 
     a->len = len;
-    return a->items == 0;
+    return a->items ? a->items : NULL;
 }
 
 static inline BT*
@@ -55,13 +56,13 @@ buffn(BT, realloc)(BufOf(BT)* b, size_t len) {
 } 
 
 
-static inline int
+static inline BT*
 buffn(BT, append)(BufOf(BT)* b, BT* data, size_t len) {
-    if (!data || !len) { return -1; }
+    if (!data || !len) { return NULL; }
     BT* rest = buffn(BT, realloc)(b, len);
-    if (!rest) { return -1; }
+    if (!rest) { return NULL; }
     memcpy(rest, data, len);
-    return 0;
+    return rest;
 }
 
 static inline BT*

@@ -88,7 +88,7 @@ lipfn(KT,VT,init)(LipOf(KT,VT)* l, LipInitArgs p) {
     l->attempts = p.sz < p.attempts ? p.sz : p.attempts;
     l->inserts = 0;
     l->zero = NULL;
-    return buffn(EntryT, calloc)(liptab(l), p.sz);
+    return !buffn(EntryT, calloc)(liptab(l), p.sz);
 }
 
 static inline int
