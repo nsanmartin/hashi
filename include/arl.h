@@ -12,7 +12,7 @@
  * Methods:
  * -------
  *
- * append: ArlOf(T)*, T* -> int
+ * append: ArlOf(T)*, T* -> T*
  * at:     ArlOf(T)*, size_t -> T*
  * back:   ArlOf(T)* -> T*
  * begin:  ArlOf(T)* -> T
@@ -65,12 +65,13 @@ ArlFn(T, back)(ArlOf(T)* a) {
 #endif // TCpy
 
 
-static inline int
+static inline T*
 ArlFn(T, append)(ArlOf(T)* a, const T* ptr) {
     if (a->len >= a->capacity) {
-        if (ArlFn(T, __realloc)(a)) { /*error in realloc*/ return  -1; }
+        if (ArlFn(T, __realloc)(a)) { /*error in realloc*/ return  NULL; }
     }
-    return TCpy(a->items + a->len++, ptr);
+    if (TCpy(a->items + a->len, ptr)) { return NULL; }
+    return a->items + a->len++;
 }
 
 static inline T* arlfn(T, begin)(ArlOf(T)*a) { return a->items; }
