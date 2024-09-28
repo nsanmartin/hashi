@@ -103,7 +103,7 @@ buffn(BT, clean)(BufOf(BT)*a) {
     }
 #endif
     free(a->items);
-    *a = {0};
+    *a = (BufOf(BT)){0};
 }
 
 #undef BT
