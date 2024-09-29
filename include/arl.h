@@ -97,6 +97,7 @@ arlfn(T, clean)(ArlOf(T)*a) {
     }
 #endif
     free(a->items);
+    *a = (ArlOf(T)){0};
 }
 
 #undef T
