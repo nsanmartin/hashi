@@ -13,14 +13,14 @@
  * Methods:
  * -------
  *
- * append:  BufOf(T)*, T*, size_t  ->  T*
- * at:      BufOf(T)*, size_t  ->  T*
- * begin:   BufOf(T)*  ->  T
- * calloc:  BufOf(T)*  ->  T*
- * clean:   BufOf(T)*  ->  void
- * end:     BufOf(T)*  ->  T
- * find:    BufOf(T)*, T*  ->  T*
- * realloc: BufOf(T)*  ->  int
+ * append:            BufOf(T)*, T*, size_t  ->  T*
+ * at:                BufOf(T)*, size_t  ->  T*
+ * begin:             BufOf(T)*  ->  T
+ * calloc:            BufOf(T)*  ->  T*
+ * clean:             BufOf(T)*  ->  void
+ * end:               BufOf(T)*  ->  T
+ * find:              BufOf(T)*, T*  ->  T*
+ * __extend_capacity: BufOf(T)*  ->  int
  *
  */
 
@@ -34,19 +34,21 @@
 typedef struct {
     BT* items;
     size_t len;
+    size_t capacity;
 } BufOf(BT);
 
 
 static inline BT*
 buffn(BT, calloc)(BufOf(BT)* a, size_t len) {
     if (!len || a->items) { return NULL; }
-    a->items = calloc(len, sizeof(BT)); 
-    a->len = len;
+    a->items    = calloc(len, sizeof(BT)); 
+    a->len      = len;
+    a->capacity = len;
     return a->items ? a->items : NULL;
 }
 
 static inline BT*
-buffn(BT, realloc)(BufOf(BT)* b, size_t len) {
+buffn(BT, __extend_capacity)(BufOf(BT)* b, size_t len) {
     size_t rest = b->len;
     if (b->len + len < b->len) { /* overflow */ return NULL; }
     b->len += len;
@@ -59,7 +61,7 @@ buffn(BT, realloc)(BufOf(BT)* b, size_t len) {
 static inline BT*
 buffn(BT, append)(BufOf(BT)* b, BT* data, size_t len) {
     if (!data || !len) { return NULL; }
-    BT* rest = buffn(BT, realloc)(b, len);
+    BT* rest = buffn(BT, __extend_capacity)(b, len);
     if (!rest) { return NULL; }
     memcpy(rest, data, len);
     return rest;
