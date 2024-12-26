@@ -20,7 +20,7 @@
  * clean:             BufOf(T)*  ->  void
  * end:               BufOf(T)*  ->  T
  * find:              BufOf(T)*, T*  ->  T*
- * __extend_capacity: BufOf(T)*  ->  int
+ * reset:             BufOf(T)*  ->  void
  *
  */
 
@@ -104,12 +104,19 @@ buffn(BT, find) (BufOf(BT)* a, BT* x) {
 
 
 static inline void
-buffn(BT, clean)(BufOf(BT)*a) {
+buffn(BT, reset)(BufOf(BT)*a) {
 #ifdef BTClean
     for (BT* it = buffn(BT, begin)(a); it != buffn(BT,end)(a); ++it) {
         BTClean(it);
     }
 #endif
+    a->len = 0;
+}
+
+
+static inline void
+buffn(BT, clean)(BufOf(BT)*a) {
+    buffn(BT, reset)(a);
     free(a->items);
     *a = (BufOf(BT)){0};
 }
