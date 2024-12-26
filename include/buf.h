@@ -49,9 +49,15 @@ buffn(BT, calloc)(BufOf(BT)* a, size_t len) {
 
 static inline BT*
 buffn(BT, __extend_capacity)(BufOf(BT)* b, size_t len) {
-    size_t rest = b->len;
     if (b->len + len < b->len) { /* overflow */ return NULL; }
-    b->len += len;
+    size_t rest = b->len;
+    if (b->len + len <= b->capacity) {
+        b->len += len;
+        return b->items + rest;
+    }
+    len -= b->capacity - b->len;
+    b->len       += len;
+    b->capacity  += len;
     b->items = realloc(b->items, b->len * sizeof(BT)); 
     if (b->items == 0) { return NULL; };
     return b->items + rest;
