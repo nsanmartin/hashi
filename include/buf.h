@@ -48,28 +48,30 @@ buffn(BT, calloc)(BufOf(BT)* a, size_t len) {
 }
 
 static inline BT*
-buffn(BT, __extend_capacity)(BufOf(BT)* b, size_t len) {
+buffn(BT, __ensure_extra_capacity)(BufOf(BT)* b, size_t len) {
     if (b->len + len < b->len) { /* overflow */ return NULL; }
-    size_t rest = b->len;
+    size_t rest_offset = b->len;
     if (b->len + len <= b->capacity) {
-        b->len += len;
-        return b->items + rest;
+        //b->len += len;
+        return b->items + rest_offset;
     }
     len -= b->capacity - b->len;
-    b->len       += len;
+    //b->len       += len;
     b->capacity  += len;
-    b->items = realloc(b->items, b->len * sizeof(BT)); 
-    if (b->items == 0) { return NULL; };
-    return b->items + rest;
+    b->items = realloc(b->items, b->capacity * sizeof(BT)); 
+    if (!b->items) { return NULL; };
+
+    return b->items + rest_offset;
 } 
 
 
 static inline BT*
 buffn(BT, append)(BufOf(BT)* b, BT* data, size_t len) {
     if (!data || !len) { return NULL; }
-    BT* rest = buffn(BT, __extend_capacity)(b, len);
+    BT* rest = buffn(BT, __ensure_extra_capacity)(b, len);
     if (!rest) { return NULL; }
-    memcpy(rest, data, len);
+    memcpy(rest, data, len * sizeof(BT));
+    b->len += len;
     return rest;
 }
 
