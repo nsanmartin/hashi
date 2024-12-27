@@ -133,11 +133,91 @@ int test_3(void) {
     clean_and_ret(status, clean, buffn(int, clean)(x));
 }
 
+int test_4(void) {
+    int status = 1;
+    BufOf(int)* x = &(BufOf(int)){0};
+
+    int arr[] = { 3,5,2,5,6,8, -1, -23232};
+    size_t arr_size = sizeof arr / sizeof (*arr);
+    int* p = arr;
+
+    buffn(int, prepend)(x, p, arr_size);
+    int* it = buffn(int, begin)(x);
+    int* end = buffn(int, end)(x);
+
+    for (; it != end; ++it, ++p) {
+        utest_assert(it, clean);
+        utest_assert(*it == *p, clean);
+    }
+
+    utest_assert((size_t)(p-arr) == arr_size, clean);
+    utest_assert(8 == arr_size, clean);
+
+
+    buffn(int, prepend)(x, arr, arr_size);
+    it = buffn(int, begin)(x);
+    end = buffn(int, end)(x);
+    for (size_t i = 0; i < 8; ++it, ++i) {
+        utest_assert(it, clean);
+        utest_assert(*it == arr[i], clean);
+    }
+    for (size_t i = 0; i < 8; ++it, ++i) {
+        utest_assert(it, clean);
+        utest_assert(*it == arr[i], clean);
+    }
+    utest_assert((size_t)(it-x->items)/2 == arr_size, clean);
+    utest_assert(16 == x->len, clean);
+
+    clean_and_ret(status, clean, buffn(int, clean)(x));
+}
+
+int test_5(void) {
+    int* elem;
+    int status = 1;
+    BufOf(int)* x = &(BufOf(int)){0};
+
+    //            0   1   2   3   4  5  6  7  8  9  10
+    int arr[] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
+
+    buffn(int, append)(x, arr+5, 1);
+    elem = buffn(int, at)(x, 0);
+    utest_assert(elem, clean);
+    utest_assert(*elem == 0, clean);
+
+    buffn(int, prepend)(x, arr+1, 4);
+    elem = buffn(int, at)(x, 0);
+    utest_assert(elem, clean);
+    utest_assert(*elem == -4, clean);
+
+    elem = buffn(int, at)(x, 4);
+    utest_assert(elem, clean);
+    utest_assert(*elem == 0, clean);
+
+    buffn(int, append)(x, arr+6, 4);
+    elem = buffn(int, at)(x, 0);
+    utest_assert(elem, clean);
+    utest_assert(*elem == -4, clean);
+
+    elem = buffn(int, at)(x, 7);
+    utest_assert(elem, clean);
+    utest_assert(*elem == 3, clean);
+
+    buffn(int, prepend)(x, arr, 1);
+    elem = buffn(int, at)(x, 0);
+    utest_assert(elem, clean);
+    utest_assert(*elem == -5, clean);
+
+    clean_and_ret(status, clean, buffn(int, clean)(x));
+}
+
 int main(void) {
-    int failures = test_0()
+    int failures
+        = test_0()
         + test_1()
         + test_2()
         + test_3()
+        + test_4()
+        + test_5()
         ;
 
 	if (failures) {

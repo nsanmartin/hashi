@@ -1,4 +1,4 @@
-CFLAGS:=-g  -Wall -Wextra -Werror -pedantic -Wold-style-definition 
+CFLAGS:=-g -std=c2x -Wall -Wextra -Werror -pedantic -Wold-style-definition -Wunused-function
 
 
 OBJDIR=build
@@ -8,7 +8,7 @@ HEADERS=$(wildcard $(INCLUDE)/*.h)
 SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJ=$(SRCS:src/%.c=$(OBJDIR)/%.o)
 
-tests: test_lip test_arl test_buf
+test_all: test_lip test_arl test_buf
 	build/test_lip && build/test_arl && build/test_buf
 
 

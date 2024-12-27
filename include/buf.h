@@ -20,6 +20,7 @@
  * clean:             BufOf(T)*  ->  void
  * end:               BufOf(T)*  ->  T
  * find:              BufOf(T)*, T*  ->  T*
+ * prepend:           BufOf(T)*, T*, size_t  ->  T*
  * reset:             BufOf(T)*  ->  void
  *
  */
@@ -53,7 +54,6 @@ buffn(BT, __ensure_extra_capacity)(BufOf(BT)* b, size_t len) {
     size_t rest_offset = b->len;
     if (b->len + len > b->capacity) {
         len -= b->capacity - b->len;
-        //b->len       += len;
         b->capacity  += len;
         b->items = realloc(b->items, b->capacity * sizeof(BT)); 
         if (!b->items) { return NULL; };
@@ -69,6 +69,18 @@ buffn(BT, append)(BufOf(BT)* b, BT* data, size_t len) {
     BT* rest = buffn(BT, __ensure_extra_capacity)(b, len);
     if (!rest) { return NULL; }
     memcpy(rest, data, len * sizeof(BT));
+    b->len += len;
+    return rest;
+}
+
+static inline BT*
+buffn(BT, prepend)(BufOf(BT)* b, BT* data, size_t len) {
+    if (!data || !len) { return NULL; }
+    BT* rest = buffn(BT, __ensure_extra_capacity)(b, len);
+    if (!rest) { return NULL; }
+    if (b->len)
+        memmove(b->items + len, b->items, b->len * sizeof(BT));
+    memcpy(b->items, data, len * sizeof(BT));
     b->len += len;
     return rest;
 }
