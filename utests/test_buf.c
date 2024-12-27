@@ -100,6 +100,7 @@ int test_3_check(BufOf(int)*x, int* a, size_t n) {
         utest_assert_ret(it); utest_assert_ret(*it == a[i]);
     }
     utest_assert_ret(n == (size_t)(it-buffn(int, begin)(x)));
+    utest_assert_ret(n == x->len);
 
     buffn(int, reset)(x);
     return 0;
