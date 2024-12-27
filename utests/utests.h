@@ -11,6 +11,7 @@ enum { TestOk = 0, TestFail = 1 };
 
 typedef const char* Error ;
 #define utest_assert(Expr, Tag) do{ if(!(Expr)) { goto Tag;} }while(0)
+#define utest_assert_ret(Expr) do{ if(!(Expr)) { return -1 ;} }while(0)
 
 #define clean_and_ret(Status, Tag, Cleanup) do{\
     Status = 0; \
