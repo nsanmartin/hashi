@@ -4,6 +4,9 @@
 #define BT int
 #include <buf.h>
 
+#define BT char
+#include <buf.h>
+
 /* calloc */
 int test_0(void) {
     int status = 1;
@@ -208,6 +211,36 @@ int test_5(void) {
     utest_assert(*elem == -5, clean);
 
     clean_and_ret(status, clean, buffn(int, clean)(x));
+}
+
+int test_6(void) {
+    int status = 1;
+    BufOf(char)* x = &(BufOf(char)){0};
+
+    char* first = "First";
+    char* second = "Second";
+    char* third = "Third";
+    char* fourth = "Fourth";
+
+
+    buffn(char, prepend)(x, fourth, sizeof fourth);
+    buffn(char, prepend)(x, third, sizeof third);
+    buffn(char, prepend)(x, second, sizeof second);
+    buffn(char, prepend)(x, first, sizeof first);
+    buffn(char, append)(x, "\0", 1);
+    utest_assert(x->items, clean);
+    utest_assert(!strcmp(x->items, "First" "Second" "Third" "Fourth"), clean);
+
+    buffn(char, reset)(x);
+
+    buffn(char, prepend)(x, fourth, sizeof fourth);
+    buffn(char, prepend)(x, third, sizeof third);
+    buffn(char, prepend)(x, second, sizeof second);
+    buffn(char, prepend)(x, first, sizeof first);
+    buffn(char, append)(x, "\0", 1);
+    utest_assert(x->items, clean);
+    utest_assert(!strcmp(x->items, "First" "Second" "Third" "Fourth"), clean);
+    clean_and_ret(status, clean, buffn(char, clean)(x));
 }
 
 int main(void) {
