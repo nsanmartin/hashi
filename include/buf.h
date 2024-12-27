@@ -51,15 +51,13 @@ static inline BT*
 buffn(BT, __ensure_extra_capacity)(BufOf(BT)* b, size_t len) {
     if (b->len + len < b->len) { /* overflow */ return NULL; }
     size_t rest_offset = b->len;
-    if (b->len + len <= b->capacity) {
-        //b->len += len;
-        return b->items + rest_offset;
+    if (b->len + len > b->capacity) {
+        len -= b->capacity - b->len;
+        //b->len       += len;
+        b->capacity  += len;
+        b->items = realloc(b->items, b->capacity * sizeof(BT)); 
+        if (!b->items) { return NULL; };
     }
-    len -= b->capacity - b->len;
-    //b->len       += len;
-    b->capacity  += len;
-    b->items = realloc(b->items, b->capacity * sizeof(BT)); 
-    if (!b->items) { return NULL; };
 
     return b->items + rest_offset;
 } 
