@@ -34,7 +34,7 @@ static inline int stringp_copy(string* dest, string* src) {
     if (dest->s) { return -1; }
     dest->s = malloc(src->len);
     if (!dest->s) { return -1; }
-    memcpy(dest->s, src->s, src->len);
+    memcpy((void*)dest->s, src->s, src->len);
     dest->len = src->len;
     return 0;
 }

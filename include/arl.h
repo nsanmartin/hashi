@@ -41,7 +41,7 @@ static inline int
 ArlFn(T, __realloc)(ArlOf(T)* a) {
     if (a->capacity * 2 < a->capacity) { /* overflow */ return -1; }
     a->capacity = a->capacity ? 2 * a->capacity : ArlDefaultInitialCapacity ;
-    a->items = realloc(a->items, a->capacity * sizeof(T)); 
+    a->items = realloc((void*)a->items, a->capacity * sizeof(T)); 
     return a->items == 0;
 } 
 
@@ -96,7 +96,7 @@ arlfn(T, clean)(ArlOf(T)*a) {
         TClean(it);
     }
 #endif
-    free(a->items);
+    free((void*)a->items);
     *a = (ArlOf(T)){0};
 }
 

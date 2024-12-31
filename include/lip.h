@@ -173,7 +173,7 @@ lipfn(KT, VT, __dup)(LipOf(KT,VT)* l) {
     }
 
     /* We 'move' the pointers/bytes, so no cleanup. */
-    free(t0.items);
+    free((void*)t0.items);
     return 0;
 }
 

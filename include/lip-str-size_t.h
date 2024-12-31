@@ -15,7 +15,7 @@ typedef char* str;
 #define KT str
 #define KTCmp strp_compare
 #define KTCpy strp_copy
-#define KTClean(Ptr) do{ if(Ptr) free(*Ptr);}while(0)
+#define KTClean(Ptr) do{ if(Ptr) free((void*)*Ptr);}while(0)
 #ifndef KHash
 #define KHash strp_hash
 #endif
