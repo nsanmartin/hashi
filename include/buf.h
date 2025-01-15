@@ -53,8 +53,7 @@ buffn(BT, __ensure_extra_capacity)(BufOf(BT)* b, size_t len) {
     if (b->len + len < b->len) { /* overflow */ return NULL; }
     size_t rest_offset = b->len;
     if (b->len + len > b->capacity) {
-        len -= b->capacity - b->len;
-        b->capacity  += len;
+        b->capacity  = b->len + len;
         b->items = realloc((void*)b->items, b->capacity * sizeof(BT)); 
         if (!b->items) { return NULL; };
     }
