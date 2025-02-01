@@ -32,7 +32,7 @@
 #endif
 
 #define buflen(B) (B)->len
-typedef struct {
+typedef struct BufOf(BT) {
     BT* items;
     size_t len;
     size_t capacity;

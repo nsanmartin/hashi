@@ -30,7 +30,7 @@
 
 #define arl_len(A) (A)->len
 
-typedef struct {
+typedef struct ArlOf(T) {
     T* items;
     size_t len;
     size_t capacity;

@@ -71,7 +71,7 @@ lipfn(KT,VT,clean_entry)(EntryT* e) {
 #define VTCpy(Dst, Src) hashi_copy_bytes(Dst, Src, sizeof(VT))
 #endif // VTCpy
 
-typedef struct {
+typedef struct LipOf(KT,VT) {
     /* If a type's zero coincides with plain zero we nees to distinguish
      * it from empty slot */
     size_t attempts;
