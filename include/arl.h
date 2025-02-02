@@ -55,6 +55,13 @@ ArlFn(T, back)(ArlOf(T)* a) {
     return arl_len(a) ? ArlFn(T, at)(a, arl_len(a) - 1) : 0x0;
 }
 
+static inline T*
+ArlFn(T, pop)(ArlOf(T)* a) {
+    T* pp = arlfn(T,back)(a);
+    if (pp) --a->len;
+    return pp;
+}
+
 #ifndef TCmp
 #define TCmp(S1, S2) hashi_compare_bytes(S1, S2, sizeof(T))
 #endif // TCmp
