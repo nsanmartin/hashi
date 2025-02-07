@@ -1,11 +1,11 @@
-/*
- * Global hashi functions, ie, with larger scope than #define T .. #undef T
+/* Global hashi functions, ie, with larger scope than #define T .. #undef T
  * */
 #ifndef __HASHI__H__
 #define __HASHI__H__
 
-#include <string.h>
+#include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define CAT_LITERAL(A, B) A##_##B
 #define CAT_IND(A, B) CAT_LITERAL(A,B)

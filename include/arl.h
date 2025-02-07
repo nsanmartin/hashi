@@ -19,6 +19,7 @@
  * clean:  ArlOf(T)* -> void
  * end:    ArlOf(T)* -> T
  * find:   ArlOf(T)*, T* -> T*
+ * pop:    ArlOf(T)* -> bool
  *
  */
 
@@ -55,11 +56,12 @@ ArlFn(T, back)(ArlOf(T)* a) {
     return arl_len(a) ? ArlFn(T, at)(a, arl_len(a) - 1) : 0x0;
 }
 
-static inline T*
+static inline bool
 ArlFn(T, pop)(ArlOf(T)* a) {
     T* pp = arlfn(T,back)(a);
-    if (pp) --a->len;
-    return pp;
+    if (!pp) return false;
+    --a->len;
+    return true;
 }
 
 #ifndef TCmp
