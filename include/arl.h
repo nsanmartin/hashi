@@ -79,7 +79,7 @@ ArlFn(T, append)(ArlOf(T)* a, const T* ptr) {
     if (a->len >= a->capacity) {
         if (ArlFn(T, __realloc)(a)) { /*error in realloc*/ return  NULL; }
     }
-    if (TCpy(a->items + a->len, ptr)) { return NULL; }
+    if (TCpy((void*)(a->items + a->len), ptr)) { return NULL; }
     return a->items + a->len++;
 }
 
