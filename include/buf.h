@@ -100,7 +100,8 @@ buffn(BT, at)(BufOf(BT)* a, size_t ix) {
 
 
 static inline BT* buffn(BT, begin)(BufOf(BT)*a) { return a->items; }
-static inline BT* buffn(BT, end)(BufOf(BT)*a) { return a->items + a->len; }
+
+static inline BT* buffn(BT, end)(BufOf(BT)*a) { return a->items ? a->items + a->len : a->items; }
 
 #ifdef BTCmp
 static inline BT*

@@ -84,7 +84,12 @@ ArlFn(T, append)(ArlOf(T)* a, const T* ptr) {
 }
 
 static inline T* arlfn(T, begin)(ArlOf(T)*a) { return a->items; }
-static inline T* arlfn(T, end)(ArlOf(T)*a) { return a->items + a->len; }
+/*
+ * We test whether items is NULL to avoid clang message:
+ * runtime error: applying zero offset to null pointer
+ *  SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior
+ */
+static inline T* arlfn(T, end)(ArlOf(T)*a) { return a->items ? a->items + a->len : a->items; }
 
 #ifdef TCmp
 static inline T*
